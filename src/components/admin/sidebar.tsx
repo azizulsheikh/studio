@@ -55,7 +55,7 @@ export default function AdminSidebar({ isMobile = false }: { isMobile?: boolean 
         <nav className="flex flex-col items-center gap-4 px-2 sm:py-5">
           <Link href="/">
             <Logo className="text-primary" />
-            <span className="sr-only">ClarityPay</span>
+            <span className="sr-only">Easy Beef</span>
           </Link>
           <Tooltip>
             <TooltipTrigger asChild>

@@ -26,11 +26,10 @@ export default async function Home() {
               <div className="flex flex-col justify-center space-y-4 text-center">
                 <div className="space-y-2">
                   <h1 className="text-3xl font-bold tracking-tighter sm:text-5xl xl:text-6xl/none bg-clip-text text-transparent bg-gradient-to-r from-primary to-accent">
-                    Welcome to ClarityPay
+                    Welcome to Easy Beef
                   </h1>
                   <p className="max-w-[600px] text-muted-foreground mx-auto md:text-xl">
-                    Transparent and secure payment processing, designed for trust and
-                    stability.
+                    The easiest way to manage your beef business.
                   </p>
                 </div>
               </div>
@@ -81,7 +80,7 @@ export default async function Home() {
       </main>
 
       <footer className="text-center py-8 text-sm text-muted-foreground">
-        © {new Date().getFullYear()} ClarityPay. All rights reserved.
+        © {new Date().getFullYear()} Easy Beef. All rights reserved.
       </footer>
     </div>
   );

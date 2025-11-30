@@ -7,8 +7,8 @@ import { cn } from '@/lib/utils';
 const inter = Inter({ subsets: ['latin'], variable: '--font-sans' });
 
 export const metadata: Metadata = {
-  title: 'ClarityPay',
-  description: 'Transparent and Secure Payment Processing',
+  title: 'Easy Beef',
+  description: 'The easiest way to manage your beef business',
 };
 
 export default function RootLayout({
