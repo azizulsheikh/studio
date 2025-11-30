@@ -26,7 +26,7 @@ import { useToast } from '@/hooks/use-toast';
 import { Member, Payment, PaymentSchema } from '@/lib/definitions';
 import { createPayment, updatePayment } from '@/lib/actions';
 
-const FormSchema = PaymentSchema.pick({ memberId: true, amount: true, paymentMethod: true, description: true });
+const FormSchema = PaymentSchema.pick({ memberId: true, amount: true, paymentMethod: true, description: true, status: true });
 
 type PaymentFormProps = {
   payment: Payment | null;
@@ -43,6 +43,7 @@ export function PaymentForm({ payment, members, onFinished }: PaymentFormProps) 
       amount: payment?.amount || 0,
       paymentMethod: payment?.paymentMethod || 'Credit Card',
       description: payment?.description || '',
+      status: payment?.status || 'Pending',
     },
   });
 
@@ -130,6 +131,28 @@ export function PaymentForm({ payment, members, onFinished }: PaymentFormProps) 
                   <SelectItem value="Credit Card">Credit Card</SelectItem>
                   <SelectItem value="PayPal">PayPal</SelectItem>
                   <SelectItem value="Bank Transfer">Bank Transfer</SelectItem>
+                </SelectContent>
+              </Select>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+         <FormField
+          control={form.control}
+          name="status"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Status</FormLabel>
+              <Select onValueChange={field.onChange} defaultValue={field.value}>
+                <FormControl>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select a status" />
+                  </SelectTrigger>
+                </FormControl>
+                <SelectContent>
+                  <SelectItem value="Completed">Completed</SelectItem>
+                  <SelectItem value="Pending">Pending</SelectItem>
+                  <SelectItem value="Failed">Failed</SelectItem>
                 </SelectContent>
               </Select>
               <FormMessage />

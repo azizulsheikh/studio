@@ -23,6 +23,7 @@ export type Payment = {
   timestamp: string;
   paymentMethod: 'Credit Card' | 'PayPal' | 'Bank Transfer';
   description: string;
+  status: 'Completed' | 'Pending' | 'Failed';
 };
 
 export const PaymentSchema = z.object({
@@ -32,6 +33,7 @@ export const PaymentSchema = z.object({
   timestamp: z.string(),
   paymentMethod: z.enum(['Credit Card', 'PayPal', 'Bank Transfer']),
   description: z.string().min(3, { message: 'Description must be at least 3 characters.' }),
+  status: z.enum(['Completed', 'Pending', 'Failed']),
 });
 
 export type PrioritizedPayment = Payment & {

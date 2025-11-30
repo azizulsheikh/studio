@@ -110,6 +110,7 @@ export async function createPayment(formData: FormData) {
   payments.push(newPayment);
   await writeData(paymentsPath, payments);
   
+  revalidatePath('/');
   revalidatePath('/admin/payments');
   revalidatePath('/admin');
   return { message: 'Payment created successfully.' };
@@ -132,6 +133,7 @@ export async function updatePayment(formData: FormData) {
   
   await writeData(paymentsPath, payments);
   
+  revalidatePath('/');
   revalidatePath('/admin/payments');
   revalidatePath('/admin');
   return { message: 'Payment updated successfully.' };
@@ -141,6 +143,7 @@ export async function deletePayment(id: string) {
   let payments = await readData<Payment>(paymentsPath);
   payments = payments.filter(p => p.id !== id);
   await writeData(paymentsPath, payments);
+  revalidatePath('/');
   revalidatePath('/admin/payments');
   revalidatePath('/admin');
   return { message: 'Payment deleted successfully.' };

@@ -40,6 +40,8 @@ import { deletePayment } from '@/lib/actions';
 import { useToast } from '@/hooks/use-toast';
 import { PaymentForm } from './payment-form';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Badge } from '../ui/badge';
+import { cn } from '@/lib/utils';
 
 export default function PaymentsTable({ payments, members }: { payments: Payment[]; members: Member[] }) {
   const { toast } = useToast();
@@ -94,6 +96,7 @@ export default function PaymentsTable({ payments, members }: { payments: Payment
               <TableHead>Member</TableHead>
               <TableHead>Amount</TableHead>
               <TableHead>Method</TableHead>
+              <TableHead>Status</TableHead>
               <TableHead className="hidden md:table-cell">Date</TableHead>
               <TableHead>Description</TableHead>
               <TableHead>
@@ -107,6 +110,23 @@ export default function PaymentsTable({ payments, members }: { payments: Payment
                 <TableCell className="font-medium">{memberMap.get(payment.memberId) || 'Unknown'}</TableCell>
                 <TableCell>${payment.amount.toFixed(2)}</TableCell>
                 <TableCell>{payment.paymentMethod}</TableCell>
+                <TableCell>
+                <Badge
+                    variant={
+                      payment.status === 'Completed'
+                        ? 'default'
+                        : payment.status === 'Failed'
+                        ? 'destructive'
+                        : 'secondary'
+                    }
+                    className={cn(
+                        payment.status === 'Completed' && 'bg-primary text-primary-foreground',
+                        payment.status === 'Pending' && 'bg-gray-200 text-gray-800',
+                    )}
+                  >
+                    {payment.status}
+                  </Badge>
+                </TableCell>
                 <TableCell className="hidden md:table-cell">
                   {new Date(payment.timestamp).toLocaleDateString()}
                 </TableCell>
