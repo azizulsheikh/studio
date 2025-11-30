@@ -154,7 +154,7 @@ export function AdminAuthProvider({ children }: { children: React.ReactNode }) {
               <Label htmlFor="current-password">Current Password</Label>
               <Input
                 id="current-password"
-                type="password"
+                type="text"
                 value={currentPassword}
                 onChange={(e) => setCurrentPassword(e.target.value)}
               />
@@ -163,7 +163,7 @@ export function AdminAuthProvider({ children }: { children: React.ReactNode }) {
               <Label htmlFor="new-password">New Password</Label>
               <Input
                 id="new-password"
-                type="password"
+                type="text"
                 value={newPassword}
                 onChange={(e) => setNewPassword(e.target.value)}
               />
@@ -172,7 +172,7 @@ export function AdminAuthProvider({ children }: { children: React.ReactNode }) {
               <Label htmlFor="confirm-new-password">Confirm New Password</Label>
               <Input
                 id="confirm-new-password"
-                type="password"
+                type="text"
                 value={confirmNewPassword}
                 onChange={(e) => setConfirmNewPassword(e.target.value)}
               />
