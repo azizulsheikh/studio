@@ -51,7 +51,7 @@ export async function createMember(formData: FormData) {
     };
   }
   
-  const { name, email, role } = validatedFields.data;
+  const { name, email, role, imageUrl } = validatedFields.data;
   const members = await readData<Member>(membersPath);
   
   const newMember: Member = {
@@ -60,6 +60,7 @@ export async function createMember(formData: FormData) {
     email,
     role,
     joinDate: new Date().toISOString(),
+    imageUrl: imageUrl || undefined,
   };
 
   members.push(newMember);
@@ -83,7 +84,7 @@ export async function updateMember(formData: FormData) {
   const { id, ...dataToUpdate } = validatedFields.data;
   let members = await readData<Member>(membersPath);
   
-  members = members.map(m => m.id === id ? { ...m, ...dataToUpdate } : m);
+  members = members.map(m => m.id === id ? { ...m, ...dataToUpdate, imageUrl: dataToUpdate.imageUrl || undefined } : m);
   
   await writeData(membersPath, members);
   

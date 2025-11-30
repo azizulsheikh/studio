@@ -6,6 +6,7 @@ export type Member = {
   email: string;
   role: 'admin' | 'member';
   joinDate: string;
+  imageUrl?: string;
 };
 
 export const MemberSchema = z.object({
@@ -14,6 +15,7 @@ export const MemberSchema = z.object({
   email: z.string().email({ message: 'Please enter a valid email.' }),
   role: z.enum(['admin', 'member']),
   joinDate: z.string(),
+  imageUrl: z.string().url({ message: 'Please enter a valid URL.' }).optional().or(z.literal('')),
 });
 
 export type Payment = {

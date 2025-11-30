@@ -5,7 +5,11 @@ import { PlaceHolderImages } from '@/lib/placeholder-images';
 import { User, Mail, Calendar } from 'lucide-react';
 
 export default function ProfileCard({ member }: { member: Member }) {
-  const avatar = PlaceHolderImages.find(p => p.id === member.id);
+  const avatarFromPlaceholders = PlaceHolderImages.find(p => p.id === member.id);
+  const newMemberImage = PlaceHolderImages.find(p => p.id === 'new-member-avatar');
+  const avatarUrl = member.imageUrl || avatarFromPlaceholders?.imageUrl || newMemberImage?.imageUrl;
+  const avatarHint = avatarFromPlaceholders?.imageHint || newMemberImage?.imageHint || 'member avatar';
+
 
   return (
     <Card>
@@ -13,14 +17,14 @@ export default function ProfileCard({ member }: { member: Member }) {
         <CardTitle>My Profile</CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">
-        {avatar && (
+        {avatarUrl && (
             <Image
                 alt="Profile picture"
                 className="aspect-square rounded-full object-cover mx-auto"
                 height="120"
-                src={avatar.imageUrl}
+                src={avatarUrl}
                 width="120"
-                data-ai-hint={avatar.imageHint}
+                data-ai-hint={avatarHint}
             />
         )}
         <div className="text-center">

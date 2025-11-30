@@ -26,7 +26,7 @@ import { Member, MemberSchema } from '@/lib/definitions';
 import { createMember, updateMember } from '@/lib/actions';
 import { useRouter } from 'next/navigation';
 
-const FormSchema = MemberSchema.pick({ name: true, email: true, role: true });
+const FormSchema = MemberSchema.pick({ name: true, email: true, role: true, imageUrl: true });
 
 type MemberFormProps = {
   member: Member | null;
@@ -42,6 +42,7 @@ export function MemberForm({ member, onFinished }: MemberFormProps) {
       name: member?.name || '',
       email: member?.email || '',
       role: member?.role || 'member',
+      imageUrl: member?.imageUrl || '',
     },
   });
 
@@ -106,6 +107,15 @@ export function MemberForm({ member, onFinished }: MemberFormProps) {
             </FormItem>
           )}
         />
+        <FormField control={form.control} name="imageUrl" render={({ field }) => (
+            <FormItem>
+                <FormLabel>Profile Picture URL (Optional)</FormLabel>
+                <FormControl>
+                    <Input placeholder="https://example.com/image.png" {...field} />
+                </FormControl>
+                <FormMessage />
+            </FormItem>
+        )} />
         <FormField
           control={form.control}
           name="role"

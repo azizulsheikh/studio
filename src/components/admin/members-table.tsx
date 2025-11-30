@@ -115,18 +115,21 @@ export default function MembersTable({ members }: { members: MemberWithFormatted
           </TableHeader>
           <TableBody>
             {members.map((member) => {
-              const avatar = memberImages.find(img => img.id === member.id) ?? newMemberImage;
+              const avatarFromPlaceholders = memberImages.find(img => img.id === member.id);
+              const avatarUrl = member.imageUrl || avatarFromPlaceholders?.imageUrl || newMemberImage?.imageUrl;
+              const avatarHint = avatarFromPlaceholders?.imageHint || newMemberImage?.imageHint || 'member avatar';
+              
               return (
               <TableRow key={member.id}>
                 <TableCell className="hidden sm:table-cell">
-                    {avatar && 
+                    {avatarUrl && 
                         <Image
                             alt="Member avatar"
                             className="aspect-square rounded-full object-cover"
                             height="40"
-                            src={avatar.imageUrl}
+                            src={avatarUrl}
                             width="40"
-                            data-ai-hint={avatar.imageHint}
+                            data-ai-hint={avatarHint}
                         />
                     }
                 </TableCell>
