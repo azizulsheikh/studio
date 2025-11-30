@@ -4,8 +4,9 @@ import PaymentHistoryTable from '@/components/member/payment-history-table';
 import PageHeader from '@/components/page-header';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
-import { ArrowLeft, DollarSign } from 'lucide-react';
+import { ArrowLeft, DollarSign, Home } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import Logo from '@/components/logo';
 
 export const dynamic = 'force-dynamic';
 
@@ -31,15 +32,18 @@ export default async function MemberProfilePage({ params }: { params: { id: stri
   const totalPayment = personalPayments.reduce((acc, payment) => acc + payment.amount, 0);
 
   return (
-    <>
-      <PageHeader title={member.name} description={`An overview of ${member.name}'s profile and payment activity.`}>
+    <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <header className="flex items-center justify-between mb-8">
+        <Logo />
         <Button asChild variant="outline">
-          <Link href="/admin/members">
-            <ArrowLeft className="mr-2 h-4 w-4" />
-            Back to Members
+          <Link href="/">
+            <Home className="mr-2 h-4 w-4" />
+            Back to Home
           </Link>
         </Button>
-      </PageHeader>
+      </header>
+      
+      <PageHeader title={member.name} description={`An overview of ${member.name}'s profile and payment activity.`} />
 
       <div className="grid gap-8 lg:grid-cols-3">
         <div className="lg:col-span-1 space-y-8">
@@ -61,6 +65,6 @@ export default async function MemberProfilePage({ params }: { params: { id: stri
             <PaymentHistoryTable payments={personalPayments} />
         </div>
       </div>
-    </>
+    </div>
   );
 }
