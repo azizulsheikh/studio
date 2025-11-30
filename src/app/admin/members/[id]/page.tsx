@@ -4,7 +4,8 @@ import PaymentHistoryTable from '@/components/member/payment-history-table';
 import PageHeader from '@/components/page-header';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
-import { ArrowLeft } from 'lucide-react';
+import { ArrowLeft, DollarSign } from 'lucide-react';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
 export const dynamic = 'force-dynamic';
 
@@ -27,6 +28,7 @@ export default async function MemberProfilePage({ params }: { params: { id: stri
   }
 
   const personalPayments = await getPaymentsByMemberId(memberId);
+  const totalPayment = personalPayments.reduce((acc, payment) => acc + payment.amount, 0);
 
   return (
     <>
@@ -40,8 +42,20 @@ export default async function MemberProfilePage({ params }: { params: { id: stri
       </PageHeader>
 
       <div className="grid gap-8 lg:grid-cols-3">
-        <div className="lg:col-span-1">
+        <div className="lg:col-span-1 space-y-8">
           <ProfileCard member={member} />
+          <Card>
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium">Total Billed</CardTitle>
+              <DollarSign className="h-4 w-4 text-muted-foreground" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">৳{totalPayment.toFixed(2)}</div>
+              <p className="text-xs text-muted-foreground">
+                Total amount billed to this member.
+              </p>
+            </CardContent>
+          </Card>
         </div>
         <div className="lg:col-span-2">
             <PaymentHistoryTable payments={personalPayments} />
