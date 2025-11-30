@@ -19,7 +19,6 @@ import { cn } from '@/lib/utils';
 import { getPaymentsByMemberId } from '@/lib/actions';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import ProfileCard from '../member/profile-card';
-import PaymentHistoryTable from '../member/payment-history-table';
 import { Skeleton } from '../ui/skeleton';
 
 type EnrichedPayment = Payment & { totalPayment: number };
@@ -33,7 +32,6 @@ export default function AllPaymentsClient({ initialPayments, initialMembers }: P
   const [payments, setPayments] = React.useState<EnrichedPayment[]>([]);
   const [loading, setLoading] = React.useState(true);
   const [selectedMember, setSelectedMember] = React.useState<Member | null>(null);
-  const [memberPayments, setMemberPayments] = React.useState<Payment[]>([]);
   const [isDialogOpen, setIsDialogOpen] = React.useState(false);
   
   const memberMap = React.useMemo(() => new Map(initialMembers.map((m) => [m.id, m])), [initialMembers]);
@@ -90,8 +88,6 @@ export default function AllPaymentsClient({ initialPayments, initialMembers }: P
     const member = memberMap.get(memberId);
     if (member) {
       setSelectedMember(member);
-      const payments = await getPaymentsByMemberId(memberId);
-      setMemberPayments(payments);
       setIsDialogOpen(true);
     }
   };
@@ -159,19 +155,14 @@ export default function AllPaymentsClient({ initialPayments, initialMembers }: P
     </Card>
 
     <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-        <DialogContent className="sm:max-w-4xl">
+        <DialogContent className="sm:max-w-md">
             {selectedMember && (
                 <>
                     <DialogHeader>
                         <DialogTitle>{selectedMember.name}'s Profile</DialogTitle>
                     </DialogHeader>
-                    <div className="grid gap-8 lg:grid-cols-3 py-4">
-                        <div className="lg:col-span-1">
-                            <ProfileCard member={selectedMember} />
-                        </div>
-                        <div className="lg:col-span-2">
-                            <PaymentHistoryTable payments={memberPayments} />
-                        </div>
+                    <div className="py-4">
+                        <ProfileCard member={selectedMember} />
                     </div>
                 </>
             )}
