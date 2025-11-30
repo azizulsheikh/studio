@@ -100,7 +100,6 @@ export default function PaymentsTable({ payments, members }: { payments: Payment
               <TableHead>Method</TableHead>
               <TableHead>Status</TableHead>
               <TableHead className="hidden md:table-cell">Date</TableHead>
-              <TableHead>Description</TableHead>
               <TableHead>
                 <span className="sr-only">Actions</span>
               </TableHead>
@@ -132,7 +131,6 @@ export default function PaymentsTable({ payments, members }: { payments: Payment
                 <TableCell className="hidden md:table-cell">
                   {payment.formattedDate}
                 </TableCell>
-                <TableCell>{payment.description}</TableCell>
                 <TableCell>
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
