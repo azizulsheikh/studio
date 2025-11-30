@@ -44,6 +44,7 @@ import { Badge } from '../ui/badge';
 import { cn } from '@/lib/utils';
 import ProfileCard from '../member/profile-card';
 import PaymentHistoryTable from '../member/payment-history-table';
+import { ScrollArea } from '../ui/scroll-area';
 
 type PaymentWithFormattedDate = Payment & { formattedDate: string };
 
@@ -56,7 +57,7 @@ export default function PaymentsTable({ payments, members }: { payments: Payment
   const [selectedMember, setSelectedMember] = React.useState<Member | null>(null);
   const [memberPayments, setMemberPayments] = React.useState<Payment[]>([]);
 
-  const memberMap = new Map(members.map((m) => [m.id, m]));
+  const memberMap = new Map(members.map((m) => [m.id, m.name]));
 
   const handleDelete = async (id: string) => {
     const result = await deletePayment(id);
@@ -66,7 +67,7 @@ export default function PaymentsTable({ payments, members }: { payments: Payment
   };
 
   const handleViewDetails = async (payment: Payment) => {
-    const member = memberMap.get(payment.memberId);
+    const member = members.find(m => m.id === payment.memberId);
     if (member) {
       setSelectedMember(member);
       const payments = await getPaymentsByMemberId(member.id);
@@ -123,7 +124,7 @@ export default function PaymentsTable({ payments, members }: { payments: Payment
           <TableBody>
             {payments.map((payment) => (
               <TableRow key={payment.id}>
-                <TableCell className="font-medium">{memberMap.get(payment.memberId)?.name || 'Unknown'}</TableCell>
+                <TableCell className="font-medium">{memberMap.get(payment.memberId) || 'Unknown'}</TableCell>
                 <TableCell>${payment.amount.toFixed(2)}</TableCell>
                 <TableCell>{payment.paymentMethod}</TableCell>
                 <TableCell>
@@ -201,7 +202,9 @@ export default function PaymentsTable({ payments, members }: { payments: Payment
                             <ProfileCard member={selectedMember} />
                         </div>
                         <div className="lg:col-span-2">
-                            <PaymentHistoryTable payments={memberPayments} />
+                            <ScrollArea className="h-96">
+                                <PaymentHistoryTable payments={memberPayments} />
+                            </ScrollArea>
                         </div>
                     </div>
                     <DialogFooter>
