@@ -98,9 +98,16 @@ export async function deleteMember(id: string) {
   let members = await readData<Member>(membersPath);
   members = members.filter(m => m.id !== id);
   await writeData(membersPath, members);
+
+  let payments = await readData<Payment>(paymentsPath);
+  payments = payments.filter(p => p.memberId !== id);
+  await writeData(paymentsPath, payments);
+  
   revalidatePath('/admin/members');
   revalidatePath('/admin/payments');
-  return { message: 'Member deleted successfully.' };
+  revalidatePath('/');
+  revalidatePath('/member-view');
+  return { message: 'Member and all associated payments deleted successfully.' };
 }
 
 // Payment Actions
