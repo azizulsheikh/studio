@@ -1,0 +1,70 @@
+import { getMemberById, getPaymentsByMemberId } from '@/lib/data';
+import ProfileCard from '@/components/member/profile-card';
+import PaymentHistoryTable from '@/components/member/payment-history-table';
+import PageHeader from '@/components/page-header';
+import Link from 'next/link';
+import { Button } from '@/components/ui/button';
+import { ArrowLeft, DollarSign, Home } from 'lucide-react';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import Logo from '@/components/logo';
+
+export const dynamic = 'force-dynamic';
+
+export default async function MemberProfilePage({ params }: { params: { id: string } }) {
+  const memberId = params.id;
+  const member = await getMemberById(memberId);
+
+  if (!member) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="text-center">
+            <h1 className="text-2xl font-bold">Member Not Found</h1>
+            <p className="text-muted-foreground">Could not find data for member ID: {memberId}</p>
+            <Button asChild variant="link" className="mt-4">
+                <Link href="/">Return to Home</Link>
+            </Button>
+        </div>
+      </div>
+    );
+  }
+
+  const personalPayments = await getPaymentsByMemberId(memberId);
+  const totalPayment = personalPayments.reduce((acc, payment) => acc + payment.amount, 0);
+
+  return (
+    <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <header className="flex items-center justify-between mb-8">
+        <Logo />
+        <Button asChild variant="outline">
+          <Link href="/">
+            <Home className="mr-2 h-4 w-4" />
+            Back to Home
+          </Link>
+        </Button>
+      </header>
+      
+      <PageHeader title={member.name} description={`An overview of ${member.name}'s profile and payment activity.`} />
+
+      <div className="grid gap-8 lg:grid-cols-3">
+        <div className="lg:col-span-1 space-y-8">
+          <ProfileCard member={member} />
+          <Card>
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium">Total Payment</CardTitle>
+              <DollarSign className="h-4 w-4 text-muted-foreground" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">৳{totalPayment.toFixed(2)}</div>
+              <p className="text-xs text-muted-foreground">
+                Total amount paid by this member.
+              </p>
+            </CardContent>
+          </Card>
+        </div>
+        <div className="lg:col-span-2">
+            <PaymentHistoryTable payments={personalPayments} />
+        </div>
+      </div>
+    </div>
+  );
+}

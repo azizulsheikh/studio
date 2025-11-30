@@ -86,7 +86,7 @@ export default function AllPaymentsClient({ initialPayments, initialMembers }: P
   }, [initialPayments, processData]);
 
   const handleMemberClick = (memberId: string) => {
-    router.push(`/admin/members/${memberId}`);
+    router.push(`/members/${memberId}`);
   };
 
   if (loading) {
