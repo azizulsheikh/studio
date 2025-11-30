@@ -68,6 +68,8 @@ export async function createMember(formData: FormData) {
   
   revalidatePath('/admin/members');
   revalidatePath('/admin/payments');
+  revalidatePath('/');
+  revalidatePath('/member-view');
   return { message: 'Member created successfully.' };
 }
 
@@ -91,6 +93,9 @@ export async function updateMember(formData: FormData) {
   revalidatePath('/admin/members');
   revalidatePath('/admin/payments');
   revalidatePath(`/admin/members/${id}`);
+  revalidatePath('/');
+  revalidatePath('/member-view');
+  revalidatePath(`/members/${id}`);
   return { message: 'Member updated successfully.' };
 }
 
