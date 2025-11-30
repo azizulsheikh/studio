@@ -95,7 +95,11 @@ const CreatePaymentSchema = PaymentSchema.omit({ id: true, timestamp: true });
 const EditPaymentSchema = PaymentSchema.omit({ timestamp: true });
 
 export async function createPayment(formData: FormData) {
-  const validatedFields = CreatePaymentSchema.safeParse(Object.fromEntries(formData.entries()));
+  const rawData: {[k: string]: any} = Object.fromEntries(formData.entries());
+  if (!rawData.description) {
+    rawData.description = '';
+  }
+  const validatedFields = CreatePaymentSchema.safeParse(rawData);
   
   if (!validatedFields.success) {
     return {
@@ -111,6 +115,7 @@ export async function createPayment(formData: FormData) {
     ...data,
     id: `payment-${Date.now()}`,
     timestamp: new Date().toISOString(),
+    description: data.description || '',
   };
   
   payments.push(newPayment);
@@ -123,7 +128,11 @@ export async function createPayment(formData: FormData) {
 }
 
 export async function updatePayment(formData: FormData) {
-  const validatedFields = EditPaymentSchema.safeParse(Object.fromEntries(formData.entries()));
+  const rawData: {[k: string]: any} = Object.fromEntries(formData.entries());
+  if (!rawData.description) {
+    rawData.description = '';
+  }
+  const validatedFields = EditPaymentSchema.safeParse(rawData);
   
   if (!validatedFields.success) {
     return {
@@ -149,7 +158,7 @@ export async function deletePayment(id: string) {
   let payments = await readData<Payment>(paymentsPath);
   payments = payments.filter(p => p.id !== id);
   await writeData(paymentsPath, payments);
-  revalidatePath('/');
+revalidatePath('/');
   revalidatePath('/admin/payments');
   revalidatePath('/admin');
   return { message: 'Payment deleted successfully.' };

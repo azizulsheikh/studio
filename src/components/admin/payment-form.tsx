@@ -21,7 +21,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/hooks/use-toast';
 import { Member, Payment, PaymentSchema } from '@/lib/definitions';
 import { createPayment, updatePayment } from '@/lib/actions';
@@ -50,7 +49,9 @@ export function PaymentForm({ payment, members, onFinished }: PaymentFormProps) 
   async function onSubmit(data: z.infer<typeof FormSchema>) {
     const formData = new FormData();
     Object.entries(data).forEach(([key, value]) => {
-      formData.append(key, String(value));
+      if (value) {
+        formData.append(key, String(value));
+      }
     });
 
     let result;
@@ -155,19 +156,6 @@ export function PaymentForm({ payment, members, onFinished }: PaymentFormProps) 
                   <SelectItem value="Failed">Failed</SelectItem>
                 </SelectContent>
               </Select>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="description"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Description</FormLabel>
-              <FormControl>
-                <Textarea placeholder="Monthly subscription fee" {...field} />
-              </FormControl>
               <FormMessage />
             </FormItem>
           )}

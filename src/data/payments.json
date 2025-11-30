@@ -1,9 +1,8 @@
-
 [
   {
     "id": "payment-1",
     "memberId": "member-1",
-    "amount": 150.00,
+    "amount": 150,
     "timestamp": "2024-07-20T12:00:00Z",
     "paymentMethod": "Credit Card",
     "description": "Monthly Subscription",
@@ -12,7 +11,7 @@
   {
     "id": "payment-2",
     "memberId": "member-2",
-    "amount": 75.50,
+    "amount": 75.5,
     "timestamp": "2024-07-19T15:30:00Z",
     "paymentMethod": "PayPal",
     "description": "Product Purchase",
@@ -21,7 +20,7 @@
   {
     "id": "payment-3",
     "memberId": "member-3",
-    "amount": 300.00,
+    "amount": 300,
     "timestamp": "2024-07-19T09:45:00Z",
     "paymentMethod": "Bank Transfer",
     "description": "Service Fee",
@@ -30,7 +29,7 @@
   {
     "id": "payment-4",
     "memberId": "member-1",
-    "amount": 200.00,
+    "amount": 200,
     "timestamp": "2024-07-19T18:00:00Z",
     "paymentMethod": "Credit Card",
     "description": "One-time Purchase",
@@ -39,25 +38,16 @@
   {
     "id": "payment-5",
     "memberId": "member-4",
-    "amount": 50.00,
+    "amount": 50,
     "timestamp": "2024-07-17T11:20:00Z",
     "paymentMethod": "PayPal",
     "description": "Annual Fee",
     "status": "Failed"
   },
   {
-    "id": "payment-6",
-    "memberId": "member-2",
-    "amount": 500.00,
-    "timestamp": "2024-05-06T14:10:00Z",
-    "paymentMethod": "Credit Card",
-    "description": "Large Order",
-    "status": "Completed"
-  },
-  {
     "id": "payment-7",
     "memberId": "member-3",
-    "amount": 15.00,
+    "amount": 15,
     "timestamp": "2024-05-07T20:05:00Z",
     "paymentMethod": "PayPal",
     "description": "Digital Download",
@@ -66,16 +56,16 @@
   {
     "id": "payment-8",
     "memberId": "member-1",
-    "amount": 3000.00,
+    "amount": 3000,
     "timestamp": "2024-05-08T23:50:00Z",
     "paymentMethod": "Bank Transfer",
     "description": "Suspiciously large late-night transfer",
     "status": "Pending"
   },
-    {
+  {
     "id": "payment-9",
     "memberId": "member-4",
-    "amount": 45.00,
+    "amount": 45,
     "timestamp": "2024-05-09T08:00:00Z",
     "paymentMethod": "Credit Card",
     "description": "Early morning coffee run equipment",

@@ -43,7 +43,6 @@ export default function PrioritizedPaymentsTable({ payments }: { payments: Payme
               <TableHead>Member ID</TableHead>
               <TableHead>Amount</TableHead>
               <TableHead>Date</TableHead>
-              <TableHead className="hidden md:table-cell">Description</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -64,7 +63,6 @@ export default function PrioritizedPaymentsTable({ payments }: { payments: Payme
                   <TableCell>
                     {new Date(payment.timestamp).toLocaleDateString()}
                   </TableCell>
-                  <TableCell className="hidden md:table-cell">{payment.description}</TableCell>
                 </TableRow>
               );
             })}

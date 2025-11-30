@@ -32,7 +32,7 @@ export const PaymentSchema = z.object({
   amount: z.coerce.number().positive({ message: 'Amount must be positive.' }),
   timestamp: z.string(),
   paymentMethod: z.enum(['Credit Card', 'PayPal', 'Bank Transfer']),
-  description: z.string().min(3, { message: 'Description must be at least 3 characters.' }),
+  description: z.string().optional(),
   status: z.enum(['Completed', 'Pending', 'Failed']),
 });
 
