@@ -34,12 +34,12 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
-import { MoreHorizontal, PlusCircle } from 'lucide-react';
+import { MoreHorizontal, PlusCircle, ArrowLeft } from 'lucide-react';
 import { Member, Payment } from '@/lib/definitions';
 import { deletePayment, getPaymentsByMemberId } from '@/lib/actions';
 import { useToast } from '@/hooks/use-toast';
 import { PaymentForm } from './payment-form';
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
 import { Badge } from '../ui/badge';
 import { cn } from '@/lib/utils';
 import ProfileCard from '../member/profile-card';
@@ -204,6 +204,12 @@ export default function PaymentsTable({ payments, members }: { payments: Payment
                             <PaymentHistoryTable payments={memberPayments} />
                         </div>
                     </div>
+                    <DialogFooter>
+                        <Button variant="outline" onClick={() => setDetailsDialogOpen(false)}>
+                            <ArrowLeft className="mr-2 h-4 w-4" />
+                            Back to All Payments
+                        </Button>
+                    </DialogFooter>
                 </>
             )}
         </DialogContent>
