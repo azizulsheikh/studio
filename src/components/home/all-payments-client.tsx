@@ -125,7 +125,7 @@ export default function AllPaymentsClient({ initialPayments, initialMembers }: P
                         />
                     }
                 </TableCell>
-                <TableCell className="font-medium whitespace-nowrap">{member.name || 'Unknown'}</TableCell>
+                <TableCell className="font-medium whitespace-nowrap">{member.name}</TableCell>
                 <TableCell>৳{payment.id.startsWith('dummy-') ? '0.00' : payment.amount.toFixed(2)}</TableCell>
                 <TableCell>৳{(payment.totalPayment || 0).toFixed(2)}</TableCell>
                 <TableCell>{payment.id.startsWith('dummy-') ? 'N/A' : payment.paymentMethod}</TableCell>

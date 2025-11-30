@@ -132,9 +132,13 @@ export default function PaymentsTable({ payments, members, onDataChange }: { pay
             </TableRow>
           </TableHeader>
           <TableBody>
-            {payments.map((payment) => (
+            {payments.map((payment) => {
+                const member = memberMap.get(payment.memberId);
+                if (!member) return null;
+
+                return (
               <TableRow key={payment.memberId}>
-                <TableCell className="font-medium">{memberMap.get(payment.memberId)?.name || 'Unknown'}</TableCell>
+                <TableCell className="font-medium">{member.name}</TableCell>
                 <TableCell>৳{payment.id.startsWith('dummy-') ? '0.00' : payment.amount.toFixed(2)}</TableCell>
                 <TableCell>৳{(payment.totalPayment || 0).toFixed(2)}</TableCell>
                 <TableCell>{payment.id.startsWith('dummy-') ? 'N/A' : payment.paymentMethod}</TableCell>
@@ -181,7 +185,7 @@ export default function PaymentsTable({ payments, members, onDataChange }: { pay
                   </DropdownMenu>
                 </TableCell>
               </TableRow>
-            ))}
+            )})}
           </TableBody>
         </Table>
       </CardContent>
