@@ -70,5 +70,14 @@
     "paymentMethod": "Credit Card",
     "description": "Early morning coffee run equipment",
     "status": "Completed"
+  },
+  {
+    "memberId": "member-1",
+    "amount": 1000,
+    "paymentMethod": "Credit Card",
+    "description": "",
+    "status": "Completed",
+    "id": "payment-1764518655376",
+    "timestamp": "2025-11-30T16:04:15.376Z"
   }
 ]

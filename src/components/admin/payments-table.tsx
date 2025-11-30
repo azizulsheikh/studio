@@ -36,28 +36,43 @@ import {
 } from '@/components/ui/alert-dialog';
 import { MoreHorizontal, PlusCircle } from 'lucide-react';
 import { Member, Payment } from '@/lib/definitions';
-import { deletePayment } from '@/lib/actions';
+import { deletePayment, getPaymentsByMemberId } from '@/lib/actions';
 import { useToast } from '@/hooks/use-toast';
 import { PaymentForm } from './payment-form';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Badge } from '../ui/badge';
 import { cn } from '@/lib/utils';
+import ProfileCard from '../member/profile-card';
+import PaymentHistoryTable from '../member/payment-history-table';
 
 type PaymentWithFormattedDate = Payment & { formattedDate: string };
 
 export default function PaymentsTable({ payments, members }: { payments: PaymentWithFormattedDate[]; members: Member[] }) {
   const { toast } = useToast();
   const [dialogOpen, setDialogOpen] = React.useState(false);
+  const [detailsDialogOpen, setDetailsDialogOpen] = React.useState(false);
   const [alertDialogOpen, setAlertDialogOpen] = React.useState(false);
   const [selectedPayment, setSelectedPayment] = React.useState<Payment | null>(null);
+  const [selectedMember, setSelectedMember] = React.useState<Member | null>(null);
+  const [memberPayments, setMemberPayments] = React.useState<Payment[]>([]);
 
-  const memberMap = new Map(members.map((m) => [m.id, m.name]));
+  const memberMap = new Map(members.map((m) => [m.id, m]));
 
   const handleDelete = async (id: string) => {
     const result = await deletePayment(id);
     toast({
       title: result.message,
     });
+  };
+
+  const handleViewDetails = async (payment: Payment) => {
+    const member = memberMap.get(payment.memberId);
+    if (member) {
+      setSelectedMember(member);
+      const payments = await getPaymentsByMemberId(member.id);
+      setMemberPayments(payments);
+      setDetailsDialogOpen(true);
+    }
   };
 
   const openEditDialog = (payment: Payment) => {
@@ -141,6 +156,7 @@ export default function PaymentsTable({ payments, members }: { payments: Payment
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end">
                       <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                      <DropdownMenuItem onSelect={() => handleViewDetails(payment)}>View Details</DropdownMenuItem>
                       <DropdownMenuItem onSelect={() => openEditDialog(payment)}>Edit</DropdownMenuItem>
                       <DropdownMenuItem onSelect={() => openDeleteDialog(payment)} className="text-destructive">Delete</DropdownMenuItem>
                     </DropdownMenuContent>
@@ -173,6 +189,25 @@ export default function PaymentsTable({ payments, members }: { payments: Payment
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
+      <Dialog open={detailsDialogOpen} onOpenChange={setDetailsDialogOpen}>
+        <DialogContent className="sm:max-w-4xl">
+            {selectedMember && (
+                <>
+                    <DialogHeader>
+                        <DialogTitle>{selectedMember.name}'s Profile</DialogTitle>
+                    </DialogHeader>
+                    <div className="grid gap-8 lg:grid-cols-3 py-4">
+                        <div className="lg:col-span-1">
+                            <ProfileCard member={selectedMember} />
+                        </div>
+                        <div className="lg:col-span-2">
+                            <PaymentHistoryTable payments={memberPayments} />
+                        </div>
+                    </div>
+                </>
+            )}
+        </DialogContent>
+    </Dialog>
     </Card>
   );
 }
