@@ -1,7 +1,6 @@
 import Link from 'next/link';
 import { ArrowRight, ShieldCheck, Users } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import Logo from '@/components/logo';
 import { getPayments, getMembers } from '@/lib/data';
 import AllPaymentsDashboard from '@/components/home/all-payments-dashboard';
@@ -11,8 +10,14 @@ export default async function Home() {
 
   return (
     <div className="flex flex-col min-h-screen">
-      <header className="container mx-auto px-4 sm:px-6 lg:px-8 py-4">
+      <header className="container mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
         <Logo />
+        <Button asChild>
+          <Link href="/admin">
+            <ShieldCheck className="mr-2 h-4 w-4" />
+            Admin View
+          </Link>
+        </Button>
       </header>
       <main className="flex-grow">
         <section className="py-12 md:py-24 lg:py-32">
@@ -29,27 +34,6 @@ export default async function Home() {
                 </div>
               </div>
             </div>
-          </div>
-        </section>
-
-        <section className="container mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 max-w-2xl mx-auto">
-            <Card className="hover:shadow-lg transition-shadow duration-300">
-              <CardHeader className="flex flex-row items-center justify-between pb-2">
-                <CardTitle className="text-lg font-medium">Admin Dashboard</CardTitle>
-                <ShieldCheck className="w-6 h-6 text-primary" />
-              </CardHeader>
-              <CardContent>
-                <p className="text-sm text-muted-foreground mb-4">
-                  Manage members, oversee all payments, and review transactions prioritized for fraud detection.
-                </p>
-                <Button asChild>
-                  <Link href="/admin">
-                    Go to Admin View <ArrowRight className="ml-2 h-4 w-4" />
-                  </Link>
-                </Button>
-              </CardContent>
-            </Card>
           </div>
         </section>
         
