@@ -2,6 +2,7 @@
 
 import * as React from 'react';
 import Image from 'next/image';
+import Link from 'next/link';
 import {
   Table,
   TableBody,
@@ -123,7 +124,11 @@ export default function MembersTable({ members }: { members: Member[] }) {
                         />
                     }
                 </TableCell>
-                <TableCell className="font-medium">{member.name}</TableCell>
+                <TableCell className="font-medium">
+                  <Link href={`/admin/members/${member.id}`} className="hover:underline">
+                    {member.name}
+                  </Link>
+                </TableCell>
                 <TableCell>{member.email}</TableCell>
                 <TableCell>{member.role}</TableCell>
                 <TableCell className="hidden md:table-cell">
@@ -139,6 +144,7 @@ export default function MembersTable({ members }: { members: Member[] }) {
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end">
                       <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                      <DropdownMenuItem onSelect={() => router.push(`/admin/members/${member.id}`)}>View Profile</DropdownMenuItem>
                       <DropdownMenuItem onSelect={() => openEditDialog(member)}>Edit</DropdownMenuItem>
                       <DropdownMenuItem onSelect={() => openDeleteDialog(member)} className="text-destructive">Delete</DropdownMenuItem>
                     </DropdownMenuContent>
