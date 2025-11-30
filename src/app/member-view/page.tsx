@@ -7,6 +7,7 @@ import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Home } from 'lucide-react';
 import Logo from '@/components/logo';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 
 export const dynamic = 'force-dynamic';
 
@@ -54,7 +55,15 @@ export default async function MemberViewPage() {
           <ProfileCard member={member} />
         </div>
         <div className="lg:col-span-2 space-y-8">
-            <PaymentHistoryTable payments={personalPayments} />
+            <Card>
+                <CardHeader>
+                    <CardTitle>My Payment History</CardTitle>
+                    <CardDescription>A record of all your payments.</CardDescription>
+                </CardHeader>
+                <CardContent>
+                    <PaymentHistoryTable payments={personalPayments} />
+                </CardContent>
+            </Card>
             <AllPaymentsTable payments={allPayments} />
         </div>
       </div>

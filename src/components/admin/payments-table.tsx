@@ -57,7 +57,7 @@ export default function PaymentsTable({ payments, members }: { payments: Payment
   const [selectedMember, setSelectedMember] = React.useState<Member | null>(null);
   const [memberPayments, setMemberPayments] = React.useState<Payment[]>([]);
 
-  const memberMap = new Map(members.map((m) => [m.id, m.name]));
+  const memberMap = new Map(members.map((m) => [m.id, m]));
 
   const handleDelete = async (id: string) => {
     const result = await deletePayment(id);
@@ -124,7 +124,7 @@ export default function PaymentsTable({ payments, members }: { payments: Payment
           <TableBody>
             {payments.map((payment) => (
               <TableRow key={payment.id}>
-                <TableCell className="font-medium">{memberMap.get(payment.memberId) || 'Unknown'}</TableCell>
+                <TableCell className="font-medium">{memberMap.get(payment.memberId)?.name || 'Unknown'}</TableCell>
                 <TableCell>${payment.amount.toFixed(2)}</TableCell>
                 <TableCell>{payment.paymentMethod}</TableCell>
                 <TableCell>
@@ -202,9 +202,17 @@ export default function PaymentsTable({ payments, members }: { payments: Payment
                             <ProfileCard member={selectedMember} />
                         </div>
                         <div className="lg:col-span-2">
-                            <ScrollArea className="h-96">
-                                <PaymentHistoryTable payments={memberPayments} />
-                            </ScrollArea>
+                          <Card>
+                            <CardHeader>
+                              <CardTitle>Payment History</CardTitle>
+                              <CardDescription>A record of all payments for this member.</CardDescription>
+                            </CardHeader>
+                            <CardContent>
+                              <ScrollArea className="h-96">
+                                  <PaymentHistoryTable payments={memberPayments} />
+                              </ScrollArea>
+                            </CardContent>
+                          </Card>
                         </div>
                     </div>
                     <DialogFooter>
