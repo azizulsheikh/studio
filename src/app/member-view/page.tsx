@@ -1,7 +1,6 @@
-import { getMemberById, getPaymentsByMemberId, getPayments } from '@/lib/data';
+import { getMemberById, getPaymentsByMemberId } from '@/lib/data';
 import ProfileCard from '@/components/member/profile-card';
 import PaymentHistoryTable from '@/components/member/payment-history-table';
-import AllPaymentsTable from '@/components/member/all-payments-table';
 import PageHeader from '@/components/page-header';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
@@ -31,10 +30,7 @@ export default async function MemberViewPage() {
     );
   }
 
-  const [personalPayments, allPayments] = await Promise.all([
-    getPaymentsByMemberId(MEMBER_ID),
-    getPayments()
-  ]);
+  const personalPayments = await getPaymentsByMemberId(MEMBER_ID);
 
   return (
     <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -64,7 +60,6 @@ export default async function MemberViewPage() {
                     <PaymentHistoryTable payments={personalPayments} />
                 </CardContent>
             </Card>
-            <AllPaymentsTable payments={allPayments} />
         </div>
       </div>
     </div>
