@@ -37,12 +37,16 @@ export default function RecentTransactions({ transactions, members }: { transact
 
   const processedTransactions: RecentTransaction[] = transactions.map(payment => {
     const member = memberMap.get(payment.memberId);
-    const avatar = memberImages.find(img => img.id === payment.memberId) ?? PlaceHolderImages.find(p => p.id === 'new-member-avatar');
+    const placeholderAvatar = memberImages.find(img => img.id === payment.memberId) ?? PlaceHolderImages.find(p => p.id === 'new-member-avatar');
+    
+    const imageUrl = member?.imageUrl || placeholderAvatar?.imageUrl || 'https://placehold.co/40x40';
+    const imageHint = placeholderAvatar?.imageHint || 'member avatar';
+    
     return {
         ...payment,
         memberName: member?.name || 'Unknown Member',
-        memberImage: avatar?.imageUrl || 'https://placehold.co/40x40',
-        memberImageHint: avatar?.imageHint || 'placeholder',
+        memberImage: imageUrl,
+        memberImageHint: imageHint,
         formattedDate: payment.formattedDate,
     }
   });
