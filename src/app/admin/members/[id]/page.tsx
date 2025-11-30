@@ -46,13 +46,13 @@ export default async function MemberProfilePage({ params }: { params: { id: stri
           <ProfileCard member={member} />
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Total Billed</CardTitle>
+              <CardTitle className="text-sm font-medium">Total Payment</CardTitle>
               <DollarSign className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">৳{totalPayment.toFixed(2)}</div>
               <p className="text-xs text-muted-foreground">
-                Total amount billed to this member.
+                Total amount paid by this member.
               </p>
             </CardContent>
           </Card>
