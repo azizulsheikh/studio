@@ -5,7 +5,7 @@ import PageHeader from '@/components/page-header';
 export const dynamic = 'force-dynamic';
 
 export default async function AdminDashboardPage() {
-  const { totalPayments, totalMembers, allPayments } = await getDashboardData();
+  const { totalPayments, totalMembers, totalTransactions } = await getDashboardData();
 
   return (
     <>
@@ -14,7 +14,7 @@ export default async function AdminDashboardPage() {
         <DashboardCards
           totalPayments={totalPayments}
           totalMembers={totalMembers}
-          totalTransactions={allPayments.length}
+          totalTransactions={totalTransactions}
         />
       </div>
     </>

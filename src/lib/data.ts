@@ -45,9 +45,9 @@ export async function getPaymentsByMemberId(memberId: string): Promise<Payment[]
 export async function getDashboardData() {
     const [payments, members] = await Promise.all([getPayments(), getMembers()]);
     
-    const totalPayments = payments
-      .filter(payment => payment.status === 'Completed')
-      .reduce((sum, payment) => sum + payment.amount, 0);
+    const completedPayments = payments.filter(payment => payment.status === 'Completed');
+
+    const totalPayments = completedPayments.reduce((sum, payment) => sum + payment.amount, 0);
       
     const recentTransactions = payments.slice(0, 5);
     
@@ -57,5 +57,6 @@ export async function getDashboardData() {
         recentTransactions,
         allPayments: payments,
         allMembers: members,
+        totalTransactions: completedPayments.length,
     };
 }
