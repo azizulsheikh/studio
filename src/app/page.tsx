@@ -1,12 +1,23 @@
 import Link from 'next/link';
-import { ArrowRight, ShieldCheck, Users } from 'lucide-react';
+import { ArrowRight, ShieldCheck, Users, DollarSign, MinusCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import Logo from '@/components/logo';
-import { getPayments, getMembers } from '@/lib/data';
+import { getPayments, getMembers, getDashboardData } from '@/lib/data';
 import AllPaymentsDashboard from '@/components/home/all-payments-dashboard';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
 export default async function Home() {
-  const [payments, members] = await Promise.all([getPayments(), getMembers()]);
+  const [payments, members, dashboardData] = await Promise.all([getPayments(), getMembers(), getDashboardData()]);
+  const { totalPayments, totalExpenses } = dashboardData;
+
+  const formattedTotalPayments = new Intl.NumberFormat('en-BD', {
+    style: 'currency',
+    currency: 'BDT',
+  }).format(totalPayments);
+  const formattedTotalExpenses = new Intl.NumberFormat('en-BD', {
+    style: 'currency',
+    currency: 'BDT',
+  }).format(totalExpenses);
 
   return (
     <div className="flex flex-col min-h-screen">
@@ -37,6 +48,37 @@ export default async function Home() {
           </div>
         </section>
         
+        <section className="container mx-auto px-4 sm:px-6 lg:px-8 pb-16">
+            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4 mb-8">
+                <Card>
+                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                        <CardTitle className="text-sm font-medium">Total Payments</CardTitle>
+                        <DollarSign className="h-4 w-4 text-muted-foreground" />
+                    </CardHeader>
+                    <CardContent>
+                        <div className="text-2xl font-bold">{formattedTotalPayments}</div>
+                        <p className="text-xs text-muted-foreground">
+                        Total amount collected from members
+                        </p>
+                    </CardContent>
+                </Card>
+                <Link href="/expenses">
+                  <Card className="hover:bg-muted/50 cursor-pointer">
+                      <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                          <CardTitle className="text-sm font-medium">Total Expenses</CardTitle>
+                          <MinusCircle className="h-4 w-4 text-muted-foreground" />
+                      </CardHeader>
+                      <CardContent>
+                          <div className="text-2xl font-bold">{formattedTotalExpenses}</div>
+                          <p className="text-xs text-muted-foreground">
+                          Click to view expense history
+                          </p>
+                      </CardContent>
+                  </Card>
+                </Link>
+            </div>
+        </section>
+
         <AllPaymentsDashboard initialMembers={members} initialPayments={payments} />
 
       </main>
