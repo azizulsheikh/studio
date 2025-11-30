@@ -70,5 +70,13 @@
     "status": "Completed",
     "id": "payment-1764518655376",
     "timestamp": "2025-11-30T16:04:15.376Z"
+  },
+  {
+    "memberId": "member-1",
+    "amount": 500,
+    "paymentMethod": "Credit Card",
+    "status": "Completed",
+    "id": "payment-1764519938547",
+    "timestamp": "2025-11-30T16:25:38.547Z"
   }
 ]

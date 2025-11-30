@@ -112,7 +112,7 @@ export default function PaymentsTable({ payments, members }: { payments: Payment
           <TableHeader>
             <TableRow>
               <TableHead>Member</TableHead>
-              <TableHead>Amount</TableHead>
+              <TableHead>Monthly Amount</TableHead>
               <TableHead>Method</TableHead>
               <TableHead>Status</TableHead>
               <TableHead className="hidden md:table-cell">Date</TableHead>
@@ -205,7 +205,6 @@ export default function PaymentsTable({ payments, members }: { payments: Payment
                           <Card>
                             <CardHeader>
                               <CardTitle>Payment History</CardTitle>
-                              <CardDescription>A record of all payments for this member.</CardDescription>
                             </CardHeader>
                             <CardContent>
                               <ScrollArea className="h-96">
