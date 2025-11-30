@@ -4,15 +4,10 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import Logo from '@/components/logo';
 import { getPayments, getMembers } from '@/lib/data';
-import RecentTransactions from '@/components/recent-transactions';
+import AllPaymentsDashboard from '@/components/home/all-payments-dashboard';
 
 export default async function Home() {
   const [payments, members] = await Promise.all([getPayments(), getMembers()]);
-
-  const recentTransactions = payments.slice(0, 5).map(p => ({
-    ...p,
-    formattedDate: new Date(p.timestamp).toLocaleDateString(),
-  }));
 
   return (
     <div className="flex flex-col min-h-screen">
@@ -74,8 +69,8 @@ export default async function Home() {
             </Card>
           </div>
         </section>
-
-        <RecentTransactions transactions={recentTransactions} members={members} />
+        
+        <AllPaymentsDashboard initialMembers={members} initialPayments={payments} />
 
       </main>
 
