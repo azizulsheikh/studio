@@ -2,6 +2,7 @@
 
 import * as React from 'react';
 import { useRouter } from 'next/navigation';
+import Image from 'next/image';
 import {
   Table,
   TableBody,
@@ -18,6 +19,7 @@ import { Member, Payment } from '@/lib/definitions';
 import { Badge } from '../ui/badge';
 import { cn } from '@/lib/utils';
 import { Skeleton } from '../ui/skeleton';
+import { PlaceHolderImages } from '@/lib/placeholder-images';
 
 type EnrichedPayment = Payment & { totalPayment: number };
 
@@ -32,6 +34,8 @@ export default function AllPaymentsClient({ initialPayments, initialMembers }: P
   const router = useRouter();
   
   const memberMap = React.useMemo(() => new Map(initialMembers.map((m) => [m.id, m])), [initialMembers]);
+  const memberImages = PlaceHolderImages.filter(p => p.id.startsWith('member-'));
+  const newMemberImage = PlaceHolderImages.find(p => p.id === 'new-member-avatar');
 
   const processData = React.useCallback((allPayments: Payment[]): EnrichedPayment[] => {
     const memberTotalPayments = initialMembers.reduce((acc, member) => {
@@ -103,6 +107,9 @@ export default function AllPaymentsClient({ initialPayments, initialMembers }: P
         <Table>
           <TableHeader>
             <TableRow>
+              <TableHead className="hidden w-[100px] sm:table-cell">
+                <span className="sr-only">Image</span>
+              </TableHead>
               <TableHead>Member</TableHead>
               <TableHead>Monthly Amount</TableHead>
               <TableHead>Total Payment</TableHead>
@@ -112,9 +119,29 @@ export default function AllPaymentsClient({ initialPayments, initialMembers }: P
             </TableRow>
           </TableHeader>
           <TableBody>
-            {payments.map((payment) => (
+            {payments.map((payment) => {
+              const member = memberMap.get(payment.memberId);
+              if (!member) return null;
+
+              const avatarFromPlaceholders = memberImages.find(img => img.id === member.id);
+              const avatarUrl = member.imageUrl || avatarFromPlaceholders?.imageUrl || newMemberImage?.imageUrl;
+              const avatarHint = avatarFromPlaceholders?.imageHint || newMemberImage?.imageHint || 'member avatar';
+
+              return (
               <TableRow key={payment.memberId} onClick={() => handleMemberClick(payment.memberId)} className="cursor-pointer">
-                <TableCell className="font-medium">{memberMap.get(payment.memberId)?.name || 'Unknown'}</TableCell>
+                 <TableCell className="hidden sm:table-cell">
+                    {avatarUrl && 
+                        <Image
+                            alt="Member avatar"
+                            className="aspect-square rounded-full object-cover"
+                            height="40"
+                            src={avatarUrl}
+                            width="40"
+                            data-ai-hint={avatarHint}
+                        />
+                    }
+                </TableCell>
+                <TableCell className="font-medium">{member.name || 'Unknown'}</TableCell>
                 <TableCell>৳{payment.id.startsWith('dummy-') ? '0.00' : payment.amount.toFixed(2)}</TableCell>
                 <TableCell>৳{(payment.totalPayment || 0).toFixed(2)}</TableCell>
                 <TableCell>{payment.id.startsWith('dummy-') ? 'N/A' : payment.paymentMethod}</TableCell>
@@ -141,7 +168,7 @@ export default function AllPaymentsClient({ initialPayments, initialMembers }: P
                   {payment.id.startsWith('dummy-') ? 'N/A' : new Date(payment.timestamp).toLocaleDateString()}
                 </TableCell>
               </TableRow>
-            ))}
+            )})}
           </TableBody>
         </Table>
       </CardContent>
