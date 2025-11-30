@@ -19,69 +19,40 @@ const AuthContext = createContext<{ isAuthenticated: boolean }>({
 
 export const useAdminAuth = () => useContext(AuthContext);
 
+const ADMIN_PASSWORD = 'admin123'; // Hardcoded password
+
 export function AdminAuthProvider({ children }: { children: React.ReactNode }) {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [showPasswordDialog, setShowPasswordDialog] = useState(true);
-  const [isSettingPassword, setIsSettingPassword] = useState(false);
   const [password, setPassword] = useState('');
   const { toast } = useToast();
 
-  useEffect(() => {
-    const storedPassword = localStorage.getItem('admin-password');
-    if (!storedPassword) {
-      setIsSettingPassword(true);
-    } else {
-      setIsSettingPassword(false);
-    }
-  }, []);
-
   const handlePasswordSubmit = () => {
-    if (isSettingPassword) {
-      if (password.length < 4) {
-        toast({
-            variant: 'destructive',
-            title: 'Password too short',
-            description: 'Please choose a password with at least 4 characters.',
-        });
-        return;
-      }
-      localStorage.setItem('admin-password', password);
+    if (password === ADMIN_PASSWORD) {
       setIsAuthenticated(true);
-      setShowPasswordDialog(false);
       toast({
-        title: 'Password Set',
-        description: 'You can now access the admin panel.',
+        title: 'Login Successful',
+        description: 'Welcome to the admin dashboard.',
       });
     } else {
-      const storedPassword = localStorage.getItem('admin-password');
-      if (password === storedPassword) {
-        setIsAuthenticated(true);
-        setShowPasswordDialog(false);
-      } else {
-        toast({
-          variant: 'destructive',
-          title: 'Incorrect Password',
-          description: 'Please try again.',
-        });
-      }
+      toast({
+        variant: 'destructive',
+        title: 'Incorrect Password',
+        description: 'Please try again.',
+      });
     }
     setPassword('');
   };
 
   if (!isAuthenticated) {
     return (
-      <Dialog open={showPasswordDialog} onOpenChange={() => {
-        // Prevent closing the dialog by clicking outside or pressing Escape
+      <Dialog open={true} onOpenChange={() => {
+        // Prevent closing the dialog
       }}>
         <DialogContent className="sm:max-w-[425px]" hideCloseButton={true}>
           <DialogHeader>
-            <DialogTitle>
-              {isSettingPassword ? 'Set Admin Password' : 'Admin Access'}
-            </DialogTitle>
+            <DialogTitle>Admin Access</DialogTitle>
             <DialogDescription>
-              {isSettingPassword
-                ? 'Please set a password to protect the admin dashboard.'
-                : 'Please enter the password to access the admin dashboard.'}
+              Please enter the password to access the admin dashboard.
             </DialogDescription>
           </DialogHeader>
           <div className="grid gap-4 py-4">
@@ -96,7 +67,7 @@ export function AdminAuthProvider({ children }: { children: React.ReactNode }) {
           </div>
           <DialogFooter>
             <Button onClick={handlePasswordSubmit}>
-              {isSettingPassword ? 'Set Password' : 'Login'}
+              Login
             </Button>
           </DialogFooter>
         </DialogContent>
