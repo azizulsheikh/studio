@@ -64,38 +64,6 @@
     "timestamp": "2025-11-30T17:01:07.151Z"
   },
   {
-    "memberId": "member-1764522360153",
-    "amount": 500,
-    "paymentMethod": "Credit Card",
-    "status": "Completed",
-    "id": "payment-1764522387931",
-    "timestamp": "2025-11-30T17:06:27.931Z"
-  },
-  {
-    "memberId": "member-1764522360153",
-    "amount": 200,
-    "paymentMethod": "Credit Card",
-    "status": "Completed",
-    "id": "payment-1764522422061",
-    "timestamp": "2025-11-30T17:07:02.061Z"
-  },
-  {
-    "memberId": "member-1764522550345",
-    "amount": 6000,
-    "paymentMethod": "Credit Card",
-    "status": "Completed",
-    "id": "payment-1764522617016",
-    "timestamp": "2025-11-30T17:10:17.016Z"
-  },
-  {
-    "memberId": "member-1764522550345",
-    "amount": 200,
-    "paymentMethod": "Credit Card",
-    "status": "Completed",
-    "id": "payment-1764522642911",
-    "timestamp": "2025-11-30T17:10:42.911Z"
-  },
-  {
     "memberId": "member-1764524957923",
     "amount": 1800,
     "paymentMethod": "Credit Card",

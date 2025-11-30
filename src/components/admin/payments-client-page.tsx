@@ -42,22 +42,6 @@ export default function PaymentsClientPage({ initialPayments, initialMembers }: 
       totalPayment: memberTotalPayments[payment.memberId] || 0,
     }));
 
-    const membersWithPayments = new Set(enrichedLatestPayments.map(p => p.memberId));
-    allMembers.forEach(member => {
-      if (!membersWithPayments.has(member.id)) {
-        const dummyPayment: EnrichedPayment = {
-          id: `dummy-${member.id}`,
-          memberId: member.id,
-          amount: 0,
-          timestamp: new Date(0).toISOString(),
-          paymentMethod: 'N/A' as any,
-          status: 'N/A' as any,
-          totalPayment: 0,
-        };
-        enrichedLatestPayments.push(dummyPayment);
-      }
-    });
-
     return enrichedLatestPayments.sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime());
   }, []);
 
