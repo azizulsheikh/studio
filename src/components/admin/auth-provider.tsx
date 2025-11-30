@@ -30,15 +30,8 @@ export function AdminAuthProvider({ children }: { children: React.ReactNode }) {
     const storedPassword = localStorage.getItem('admin-password');
     if (!storedPassword) {
       setIsSettingPassword(true);
-    }
-  }, []);
-  
-  useEffect(() => {
-    // On initial load, check if user is already authenticated in this session
-    const sessionAuth = sessionStorage.getItem('admin-authenticated');
-    if (sessionAuth === 'true') {
-        setIsAuthenticated(true);
-        setShowPasswordDialog(false);
+    } else {
+      setIsSettingPassword(false);
     }
   }, []);
 
@@ -55,7 +48,6 @@ export function AdminAuthProvider({ children }: { children: React.ReactNode }) {
       localStorage.setItem('admin-password', password);
       setIsAuthenticated(true);
       setShowPasswordDialog(false);
-      sessionStorage.setItem('admin-authenticated', 'true');
       toast({
         title: 'Password Set',
         description: 'You can now access the admin panel.',
@@ -65,7 +57,6 @@ export function AdminAuthProvider({ children }: { children: React.ReactNode }) {
       if (password === storedPassword) {
         setIsAuthenticated(true);
         setShowPasswordDialog(false);
-        sessionStorage.setItem('admin-authenticated', 'true');
       } else {
         toast({
           variant: 'destructive',
@@ -79,8 +70,10 @@ export function AdminAuthProvider({ children }: { children: React.ReactNode }) {
 
   if (!isAuthenticated) {
     return (
-      <Dialog open={showPasswordDialog} onOpenChange={setShowPasswordDialog}>
-        <DialogContent className="sm:max-w-[425px]">
+      <Dialog open={showPasswordDialog} onOpenChange={() => {
+        // Prevent closing the dialog by clicking outside or pressing Escape
+      }}>
+        <DialogContent className="sm:max-w-[425px]" hideCloseButton={true}>
           <DialogHeader>
             <DialogTitle>
               {isSettingPassword ? 'Set Admin Password' : 'Admin Access'}
