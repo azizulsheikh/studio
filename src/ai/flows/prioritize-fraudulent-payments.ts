@@ -20,7 +20,6 @@ const PaymentRecordSchema = z.object({
   amount: z.number().describe('The amount of the payment.'),
   timestamp: z.string().describe('The timestamp of the payment.'),
   paymentMethod: z.string().describe('The payment method used.'),
-  description: z.string().describe('A description of the payment.'),
 });
 
 export type PaymentRecord = z.infer<typeof PaymentRecordSchema>;
@@ -54,7 +53,7 @@ const prompt = ai.definePrompt({
 
   Payment Records:
   {{#each this}}
-  - ID: {{id}}, Member ID: {{memberId}}, Amount: {{amount}}, Timestamp: {{timestamp}}, Payment Method: {{paymentMethod}}, Description: {{description}}
+  - ID: {{id}}, Member ID: {{memberId}}, Amount: {{amount}}, Timestamp: {{timestamp}}, Payment Method: {{paymentMethod}}
   {{/each}}
   `,
 });

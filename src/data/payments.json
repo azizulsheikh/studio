@@ -5,7 +5,6 @@
     "amount": 150,
     "timestamp": "2024-07-20T12:00:00Z",
     "paymentMethod": "Credit Card",
-    "description": "Monthly Subscription",
     "status": "Completed"
   },
   {
@@ -14,7 +13,6 @@
     "amount": 75.5,
     "timestamp": "2024-07-19T15:30:00Z",
     "paymentMethod": "PayPal",
-    "description": "Product Purchase",
     "status": "Completed"
   },
   {
@@ -23,7 +21,6 @@
     "amount": 300,
     "timestamp": "2024-07-19T09:45:00Z",
     "paymentMethod": "Bank Transfer",
-    "description": "Service Fee",
     "status": "Pending"
   },
   {
@@ -32,7 +29,6 @@
     "amount": 200,
     "timestamp": "2024-07-19T18:00:00Z",
     "paymentMethod": "Credit Card",
-    "description": "One-time Purchase",
     "status": "Completed"
   },
   {
@@ -41,7 +37,6 @@
     "amount": 50,
     "timestamp": "2024-07-17T11:20:00Z",
     "paymentMethod": "PayPal",
-    "description": "Annual Fee",
     "status": "Failed"
   },
   {
@@ -50,7 +45,6 @@
     "amount": 15,
     "timestamp": "2024-05-07T20:05:00Z",
     "paymentMethod": "PayPal",
-    "description": "Digital Download",
     "status": "Completed"
   },
   {
@@ -59,7 +53,6 @@
     "amount": 3000,
     "timestamp": "2024-05-08T23:50:00Z",
     "paymentMethod": "Bank Transfer",
-    "description": "Suspiciously large late-night transfer",
     "status": "Pending"
   },
   {
@@ -68,14 +61,12 @@
     "amount": 45,
     "timestamp": "2024-05-09T08:00:00Z",
     "paymentMethod": "Credit Card",
-    "description": "Early morning coffee run equipment",
     "status": "Completed"
   },
   {
     "memberId": "member-1",
     "amount": 1000,
     "paymentMethod": "Credit Card",
-    "description": "",
     "status": "Completed",
     "id": "payment-1764518655376",
     "timestamp": "2025-11-30T16:04:15.376Z"

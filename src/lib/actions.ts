@@ -96,9 +96,6 @@ const EditPaymentSchema = PaymentSchema.omit({ timestamp: true });
 
 export async function createPayment(formData: FormData) {
   const rawData: {[k: string]: any} = Object.fromEntries(formData.entries());
-  if (!rawData.description) {
-    rawData.description = '';
-  }
   const validatedFields = CreatePaymentSchema.safeParse(rawData);
   
   if (!validatedFields.success) {
@@ -115,7 +112,6 @@ export async function createPayment(formData: FormData) {
     ...data,
     id: `payment-${Date.now()}`,
     timestamp: new Date().toISOString(),
-    description: data.description || '',
   };
   
   payments.push(newPayment);
@@ -129,9 +125,6 @@ export async function createPayment(formData: FormData) {
 
 export async function updatePayment(formData: FormData) {
   const rawData: {[k: string]: any} = Object.fromEntries(formData.entries());
-  if (!rawData.description) {
-    rawData.description = '';
-  }
   const validatedFields = EditPaymentSchema.safeParse(rawData);
   
   if (!validatedFields.success) {

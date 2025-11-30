@@ -22,7 +22,6 @@ export type Payment = {
   amount: number;
   timestamp: string;
   paymentMethod: 'Credit Card' | 'PayPal' | 'Bank Transfer';
-  description: string;
   status: 'Completed' | 'Pending' | 'Failed';
 };
 
@@ -32,7 +31,6 @@ export const PaymentSchema = z.object({
   amount: z.coerce.number().positive({ message: 'Amount must be positive.' }),
   timestamp: z.string(),
   paymentMethod: z.enum(['Credit Card', 'PayPal', 'Bank Transfer']),
-  description: z.string().optional(),
   status: z.enum(['Completed', 'Pending', 'Failed']),
 });
 

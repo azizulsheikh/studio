@@ -25,7 +25,7 @@ import { useToast } from '@/hooks/use-toast';
 import { Member, Payment, PaymentSchema } from '@/lib/definitions';
 import { createPayment, updatePayment } from '@/lib/actions';
 
-const FormSchema = PaymentSchema.pick({ memberId: true, amount: true, paymentMethod: true, description: true, status: true });
+const FormSchema = PaymentSchema.pick({ memberId: true, amount: true, paymentMethod: true, status: true });
 
 type PaymentFormProps = {
   payment: Payment | null;
@@ -41,7 +41,6 @@ export function PaymentForm({ payment, members, onFinished }: PaymentFormProps) 
       memberId: payment?.memberId || '',
       amount: payment?.amount || 0,
       paymentMethod: payment?.paymentMethod || 'Credit Card',
-      description: payment?.description || '',
       status: payment?.status || 'Pending',
     },
   });

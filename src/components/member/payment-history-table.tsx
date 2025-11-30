@@ -27,7 +27,6 @@ import {
             <TableHeader>
               <TableRow>
                 <TableHead>Date</TableHead>
-                <TableHead>Description</TableHead>
                 <TableHead>Method</TableHead>
                 <TableHead className="text-right">Amount</TableHead>
               </TableRow>
@@ -38,13 +37,12 @@ import {
                   <TableCell>
                     {new Date(payment.timestamp).toLocaleDateString()}
                   </TableCell>
-                  <TableCell className="font-medium">{payment.description}</TableCell>
                   <TableCell>{payment.paymentMethod}</TableCell>
                   <TableCell className="text-right">${payment.amount.toFixed(2)}</TableCell>
                 </TableRow>
               )) : (
                 <TableRow>
-                    <TableCell colSpan={4} className="text-center">No payments found.</TableCell>
+                    <TableCell colSpan={3} className="text-center">No payments found.</TableCell>
                 </TableRow>
               )}
             </TableBody>
