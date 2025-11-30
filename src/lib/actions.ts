@@ -24,6 +24,14 @@ async function writeData<T>(filePath: string, data: T[]): Promise<void> {
   await fs.writeFile(filePath, JSON.stringify(data, null, 2), 'utf-8');
 }
 
+export async function getPayments(): Promise<Payment[]> {
+    return getAllPayments();
+}
+
+export async function getMembers(): Promise<Member[]> {
+    return getAllMembers();
+}
+
 export async function getPaymentsByMemberId(memberId: string): Promise<Payment[]> {
     const payments = await getAllPayments();
     return payments.filter(p => p.memberId === memberId);
@@ -58,6 +66,7 @@ export async function createMember(formData: FormData) {
   await writeData(membersPath, members);
   
   revalidatePath('/admin/members');
+  revalidatePath('/admin/payments');
   return { message: 'Member created successfully.' };
 }
 
@@ -79,6 +88,7 @@ export async function updateMember(formData: FormData) {
   await writeData(membersPath, members);
   
   revalidatePath('/admin/members');
+  revalidatePath('/admin/payments');
   revalidatePath(`/admin/members/${id}`);
   return { message: 'Member updated successfully.' };
 }
@@ -88,6 +98,7 @@ export async function deleteMember(id: string) {
   members = members.filter(m => m.id !== id);
   await writeData(membersPath, members);
   revalidatePath('/admin/members');
+  revalidatePath('/admin/payments');
   return { message: 'Member deleted successfully.' };
 }
 
@@ -96,36 +107,38 @@ const CreatePaymentSchema = PaymentSchema.omit({ id: true, timestamp: true });
 const EditPaymentSchema = PaymentSchema.omit({ timestamp: true });
 
 export async function createPayment(formData: FormData) {
-  const rawData: {[k: string]: any} = Object.fromEntries(formData.entries());
-  const validatedFields = CreatePaymentSchema.safeParse(rawData);
+    const rawData: {[k: string]: any} = Object.fromEntries(formData.entries());
+    rawData.amount = parseFloat(rawData.amount);
+    const validatedFields = CreatePaymentSchema.safeParse(rawData);
+    
+    if (!validatedFields.success) {
+      return {
+        errors: validatedFields.error.flatten().fieldErrors,
+        message: 'Failed to create payment.',
+      };
+    }
+    
+    const data = validatedFields.data;
+    const payments = await readData<Payment>(paymentsPath);
   
-  if (!validatedFields.success) {
-    return {
-      errors: validatedFields.error.flatten().fieldErrors,
-      message: 'Failed to create payment.',
+    const newPayment: Payment = {
+      ...data,
+      id: `payment-${Date.now()}`,
+      timestamp: new Date().toISOString(),
     };
+    payments.push(newPayment);
+    await writeData(paymentsPath, payments);
+    
+    revalidatePath('/admin/payments');
+    revalidatePath('/admin');
+    revalidatePath('/member-view');
+    revalidatePath('/');
+    return { message: 'Payment processed successfully.' };
   }
-  
-  const data = validatedFields.data;
-  const payments = await readData<Payment>(paymentsPath);
-
-  const newPayment: Payment = {
-    ...data,
-    id: `payment-${Date.now()}`,
-    timestamp: new Date().toISOString(),
-  };
-  payments.push(newPayment);
-  await writeData(paymentsPath, payments);
-  
-  revalidatePath('/');
-  revalidatePath('/admin/payments');
-  revalidatePath('/admin');
-  revalidatePath('/member-view');
-  return { message: 'Payment processed successfully.' };
-}
 
 export async function updatePayment(formData: FormData) {
   const rawData: {[k: string]: any} = Object.fromEntries(formData.entries());
+  rawData.amount = parseFloat(rawData.amount);
   const validatedFields = EditPaymentSchema.safeParse(rawData);
   
   if (!validatedFields.success) {
@@ -142,10 +155,10 @@ export async function updatePayment(formData: FormData) {
   
   await writeData(paymentsPath, payments);
   
-  revalidatePath('/');
   revalidatePath('/admin/payments');
   revalidatePath('/admin');
   revalidatePath('/member-view');
+  revalidatePath('/');
   return { message: 'Payment updated successfully.' };
 }
 
@@ -153,9 +166,10 @@ export async function deletePayment(id: string) {
   let payments = await readData<Payment>(paymentsPath);
   payments = payments.filter(p => p.id !== id);
   await writeData(paymentsPath, payments);
-  revalidatePath('/');
+
   revalidatePath('/admin/payments');
   revalidatePath('/admin');
   revalidatePath('/member-view');
+  revalidatePath('/');
   return { message: 'Payment deleted successfully.' };
 }

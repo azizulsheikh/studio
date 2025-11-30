@@ -1,7 +1,6 @@
 'use client';
 
 import * as React from 'react';
-import { useRouter } from 'next/navigation';
 import {
   Table,
   TableBody,
@@ -36,7 +35,7 @@ import {
 } from '@/components/ui/alert-dialog';
 import { MoreHorizontal, PlusCircle, ArrowLeft } from 'lucide-react';
 import { Member, Payment } from '@/lib/definitions';
-import { deletePayment } from '@/lib/actions';
+import { deletePayment, createPayment } from '@/lib/actions';
 import { useToast } from '@/hooks/use-toast';
 import { PaymentForm } from './payment-form';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
@@ -47,11 +46,10 @@ import PaymentHistoryTable from '../member/payment-history-table';
 import { ScrollArea } from '../ui/scroll-area';
 import { getPaymentsByMemberId } from '@/lib/actions';
 
-type PaymentWithFormattedDate = Payment & { formattedDate: string };
+type EnrichedPayment = Payment & { totalPayment: number };
 
-export default function PaymentsTable({ payments, members, memberTotalPayments }: { payments: PaymentWithFormattedDate[]; members: Member[], memberTotalPayments: Record<string, number> }) {
+export default function PaymentsTable({ payments, members, onDataChange }: { payments: EnrichedPayment[]; members: Member[], onDataChange: () => void }) {
   const { toast } = useToast();
-  const router = useRouter();
   const [dialogOpen, setDialogOpen] = React.useState(false);
   const [detailsDialogOpen, setDetailsDialogOpen] = React.useState(false);
   const [alertDialogOpen, setAlertDialogOpen] = React.useState(false);
@@ -66,11 +64,12 @@ export default function PaymentsTable({ payments, members, memberTotalPayments }
     toast({
       title: result.message,
     });
+    onDataChange();
   };
 
   const handleFinished = () => {
     setDialogOpen(false);
-    router.refresh();
+    onDataChange();
   };
 
   const handleViewDetails = async (payment: Payment) => {
@@ -83,9 +82,13 @@ export default function PaymentsTable({ payments, members, memberTotalPayments }
     }
   };
 
+  // We can't edit from this view anymore as it's aggregated.
+  // We can only add or view details.
   const openEditDialog = (payment: Payment) => {
-    setSelectedPayment(payment);
-    setDialogOpen(true);
+     // Find the specific payment to edit.
+     const paymentToEdit = memberPayments.find(p => p.id === payment.id) || payment;
+     setSelectedPayment(paymentToEdit);
+     setDialogOpen(true);
   };
 
   const openDeleteDialog = (payment: Payment) => {
@@ -120,9 +123,9 @@ export default function PaymentsTable({ payments, members, memberTotalPayments }
               <TableHead>Member</TableHead>
               <TableHead>Monthly Amount</TableHead>
               <TableHead>Total Payment</TableHead>
-              <TableHead>Method</TableHead>
-              <TableHead>Status</TableHead>
-              <TableHead className="hidden md:table-cell">Date</TableHead>
+              <TableHead>Last Method</TableHead>
+              <TableHead>Last Status</TableHead>
+              <TableHead className="hidden md:table-cell">Last Payment Date</TableHead>
               <TableHead>
                 <span className="sr-only">Actions</span>
               </TableHead>
@@ -130,30 +133,32 @@ export default function PaymentsTable({ payments, members, memberTotalPayments }
           </TableHeader>
           <TableBody>
             {payments.map((payment) => (
-              <TableRow key={payment.id}>
+              <TableRow key={payment.memberId}>
                 <TableCell className="font-medium">{memberMap.get(payment.memberId)?.name || 'Unknown'}</TableCell>
-                <TableCell>৳{payment.amount.toFixed(2)}</TableCell>
-                <TableCell>৳{(memberTotalPayments[payment.memberId] || 0).toFixed(2)}</TableCell>
-                <TableCell>{payment.paymentMethod}</TableCell>
+                <TableCell>৳{payment.id.startsWith('dummy-') ? '0.00' : payment.amount.toFixed(2)}</TableCell>
+                <TableCell>৳{(payment.totalPayment || 0).toFixed(2)}</TableCell>
+                <TableCell>{payment.id.startsWith('dummy-') ? 'N/A' : payment.paymentMethod}</TableCell>
                 <TableCell>
-                <Badge
-                    variant={
-                      payment.status === 'Completed'
-                        ? 'default'
-                        : payment.status === 'Failed'
-                        ? 'destructive'
-                        : 'secondary'
-                    }
-                    className={cn(
-                        payment.status === 'Completed' && 'bg-primary text-primary-foreground',
-                        payment.status === 'Pending' && 'bg-gray-200 text-gray-800',
-                    )}
-                  >
-                    {payment.status}
-                  </Badge>
+                {!payment.id.startsWith('dummy-') ? (
+                  <Badge
+                      variant={
+                        payment.status === 'Completed'
+                          ? 'default'
+                          : payment.status === 'Failed'
+                          ? 'destructive'
+                          : 'secondary'
+                      }
+                      className={cn(
+                          payment.status === 'Completed' && 'bg-primary text-primary-foreground',
+                          payment.status === 'Pending' && 'bg-gray-200 text-gray-800',
+                      )}
+                    >
+                      {payment.status}
+                    </Badge>
+                ) : 'N/A'}
                 </TableCell>
                 <TableCell className="hidden md:table-cell">
-                  {payment.formattedDate}
+                  {payment.id.startsWith('dummy-') ? 'N/A' : new Date(payment.timestamp).toLocaleDateString()}
                 </TableCell>
                 <TableCell>
                   <DropdownMenu>
@@ -166,8 +171,12 @@ export default function PaymentsTable({ payments, members, memberTotalPayments }
                     <DropdownMenuContent align="end">
                       <DropdownMenuLabel>Actions</DropdownMenuLabel>
                       <DropdownMenuItem onSelect={() => handleViewDetails(payment)}>View Details</DropdownMenuItem>
+                      {/* Edit is complex in this view. Let's simplify and only allow Add/Delete/View.
                       <DropdownMenuItem onSelect={() => openEditDialog(payment)}>Edit</DropdownMenuItem>
-                      <DropdownMenuItem onSelect={() => openDeleteDialog(payment)} className="text-destructive">Delete</DropdownMenuItem>
+                      */}
+                      {!payment.id.startsWith('dummy-') && (
+                        <DropdownMenuItem onSelect={() => openDeleteDialog(payment)} className="text-destructive">Delete Last Payment</DropdownMenuItem>
+                      )}
                     </DropdownMenuContent>
                   </DropdownMenu>
                 </TableCell>
