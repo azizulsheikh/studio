@@ -3,6 +3,7 @@
 import * as React from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import {
   Table,
   TableBody,
@@ -45,6 +46,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { PlaceHolderImages } from '@/lib/placeholder-images';
 
 export default function MembersTable({ members }: { members: Member[] }) {
+  const router = useRouter();
   const { toast } = useToast();
   const [dialogOpen, setDialogOpen] = React.useState(false);
   const [alertDialogOpen, setAlertDialogOpen] = React.useState(false);
