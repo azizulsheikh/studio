@@ -79,6 +79,7 @@ export async function updateMember(formData: FormData) {
   await writeData(membersPath, members);
   
   revalidatePath('/admin/members');
+  revalidatePath(`/admin/members/${id}`);
   return { message: 'Member updated successfully.' };
 }
 
@@ -107,20 +108,38 @@ export async function createPayment(formData: FormData) {
   
   const data = validatedFields.data;
   const payments = await readData<Payment>(paymentsPath);
-  
-  const newPayment: Payment = {
-    ...data,
-    id: `payment-${Date.now()}`,
-    timestamp: new Date().toISOString(),
-  };
-  
-  payments.push(newPayment);
-  await writeData(paymentsPath, payments);
+
+  // Find the latest payment for the member
+  const memberPayments = payments.filter(p => p.memberId === data.memberId).sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime());
+  const latestPayment = memberPayments[0];
+
+  if (latestPayment) {
+    // If a payment exists, update the latest one
+    const updatedPayment = {
+      ...latestPayment,
+      amount: latestPayment.amount + data.amount,
+      timestamp: new Date().toISOString(),
+      paymentMethod: data.paymentMethod,
+      status: data.status,
+    };
+    const updatedPayments = payments.map(p => p.id === latestPayment.id ? updatedPayment : p);
+    await writeData(paymentsPath, updatedPayments);
+  } else {
+    // If no payment exists, create a new one
+    const newPayment: Payment = {
+      ...data,
+      id: `payment-${Date.now()}`,
+      timestamp: new Date().toISOString(),
+    };
+    payments.push(newPayment);
+    await writeData(paymentsPath, payments);
+  }
   
   revalidatePath('/');
   revalidatePath('/admin/payments');
   revalidatePath('/admin');
-  return { message: 'Payment created successfully.' };
+  revalidatePath('/member-view');
+  return { message: 'Payment processed successfully.' };
 }
 
 export async function updatePayment(formData: FormData) {
@@ -137,13 +156,14 @@ export async function updatePayment(formData: FormData) {
   const { id, ...dataToUpdate } = validatedFields.data;
   let payments = await readData<Payment>(paymentsPath);
   
-  payments = payments.map(p => p.id === id ? { ...p, ...dataToUpdate } : p);
+  payments = payments.map(p => p.id === id ? { ...p, ...dataToUpdate, timestamp: new Date().toISOString() } : p);
   
   await writeData(paymentsPath, payments);
   
   revalidatePath('/');
   revalidatePath('/admin/payments');
   revalidatePath('/admin');
+  revalidatePath('/member-view');
   return { message: 'Payment updated successfully.' };
 }
 
@@ -151,8 +171,9 @@ export async function deletePayment(id: string) {
   let payments = await readData<Payment>(paymentsPath);
   payments = payments.filter(p => p.id !== id);
   await writeData(paymentsPath, payments);
-revalidatePath('/');
+  revalidatePath('/');
   revalidatePath('/admin/payments');
   revalidatePath('/admin');
+  revalidatePath('/member-view');
   return { message: 'Payment deleted successfully.' };
 }

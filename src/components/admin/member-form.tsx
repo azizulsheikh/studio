@@ -8,7 +8,6 @@ import { Button } from '@/components/ui/button';
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -25,6 +24,7 @@ import {
 import { useToast } from '@/hooks/use-toast';
 import { Member, MemberSchema } from '@/lib/definitions';
 import { createMember, updateMember } from '@/lib/actions';
+import { useRouter } from 'next/navigation';
 
 const FormSchema = MemberSchema.pick({ name: true, email: true, role: true });
 
@@ -35,6 +35,7 @@ type MemberFormProps = {
 
 export function MemberForm({ member, onFinished }: MemberFormProps) {
   const { toast } = useToast();
+  const router = useRouter();
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
@@ -71,6 +72,7 @@ export function MemberForm({ member, onFinished }: MemberFormProps) {
         title: 'Success!',
         description: result.message,
       });
+      router.refresh();
       onFinished();
     }
   }
@@ -121,9 +123,6 @@ export function MemberForm({ member, onFinished }: MemberFormProps) {
                   <SelectItem value="admin">Admin</SelectItem>
                 </SelectContent>
               </Select>
-              <FormDescription>
-                Admins have full access, members have read-only access.
-              </FormDescription>
               <FormMessage />
             </FormItem>
           )}
