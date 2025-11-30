@@ -8,7 +8,7 @@ import {
   TooltipTrigger,
 } from '@/components/ui/tooltip';
 import Logo from '@/components/logo';
-import { Home, Users, CreditCard, LogOut } from 'lucide-react';
+import { Home, Users, CreditCard, ArrowLeft } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 const navItems = [
@@ -38,6 +38,13 @@ export default function AdminSidebar({ isMobile = false }: { isMobile?: boolean 
                     {item.label}
                 </Link>
             ))}
+            <Link
+                href="/"
+                className="flex items-center gap-4 px-2.5 text-muted-foreground hover:text-foreground"
+            >
+                <ArrowLeft className="h-5 w-5" />
+                Go to Homepage
+            </Link>
         </>
     )
   }
@@ -75,11 +82,11 @@ export default function AdminSidebar({ isMobile = false }: { isMobile?: boolean 
                         href="/"
                         className={cn(commonLinkClasses, "h-9 w-9 text-muted-foreground")}
                     >
-                        <LogOut className="h-5 w-5" />
-                        <span className="sr-only">Exit Admin</span>
+                        <ArrowLeft className="h-5 w-5" />
+                        <span className="sr-only">Go to Homepage</span>
                     </Link>
                 </TooltipTrigger>
-                <TooltipContent side="right">Exit Admin</TooltipContent>
+                <TooltipContent side="right">Go to Homepage</TooltipContent>
             </Tooltip>
         </nav>
       </TooltipProvider>
