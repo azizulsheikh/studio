@@ -123,7 +123,7 @@ export default function PaymentsTable({ payments, members }: { payments: Payment
           <TableBody>
             {payments.map((payment) => (
               <TableRow key={payment.id}>
-                <TableCell className="font-medium">{memberMap.get(payment.memberId) || 'Unknown'}</TableCell>
+                <TableCell className="font-medium">{memberMap.get(payment.memberId)?.name || 'Unknown'}</TableCell>
                 <TableCell>${payment.amount.toFixed(2)}</TableCell>
                 <TableCell>{payment.paymentMethod}</TableCell>
                 <TableCell>
