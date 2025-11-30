@@ -48,7 +48,7 @@ import { ScrollArea } from '../ui/scroll-area';
 
 type PaymentWithFormattedDate = Payment & { formattedDate: string };
 
-export default function PaymentsTable({ payments, members }: { payments: PaymentWithFormattedDate[]; members: Member[] }) {
+export default function PaymentsTable({ payments, members, memberTotalPayments }: { payments: PaymentWithFormattedDate[]; members: Member[], memberTotalPayments: Record<string, number> }) {
   const { toast } = useToast();
   const [dialogOpen, setDialogOpen] = React.useState(false);
   const [detailsDialogOpen, setDetailsDialogOpen] = React.useState(false);
@@ -57,7 +57,7 @@ export default function PaymentsTable({ payments, members }: { payments: Payment
   const [selectedMember, setSelectedMember] = React.useState<Member | null>(null);
   const [memberPayments, setMemberPayments] = React.useState<Payment[]>([]);
 
-  const memberMap = new Map(members.map((m) => [m.id, m]));
+  const memberMap = new Map(members.map((m) => [m.id, m.name]));
 
   const handleDelete = async (id: string) => {
     const result = await deletePayment(id);
@@ -113,6 +113,7 @@ export default function PaymentsTable({ payments, members }: { payments: Payment
             <TableRow>
               <TableHead>Member</TableHead>
               <TableHead>Monthly Amount</TableHead>
+              <TableHead>Total Payment</TableHead>
               <TableHead>Method</TableHead>
               <TableHead>Status</TableHead>
               <TableHead className="hidden md:table-cell">Date</TableHead>
@@ -124,8 +125,9 @@ export default function PaymentsTable({ payments, members }: { payments: Payment
           <TableBody>
             {payments.map((payment) => (
               <TableRow key={payment.id}>
-                <TableCell className="font-medium">{memberMap.get(payment.memberId)?.name || 'Unknown'}</TableCell>
+                <TableCell className="font-medium">{memberMap.get(payment.memberId) || 'Unknown'}</TableCell>
                 <TableCell>৳{payment.amount.toFixed(2)}</TableCell>
+                <TableCell>৳{(memberTotalPayments[payment.memberId] || 0).toFixed(2)}</TableCell>
                 <TableCell>{payment.paymentMethod}</TableCell>
                 <TableCell>
                 <Badge

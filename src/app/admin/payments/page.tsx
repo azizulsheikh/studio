@@ -12,10 +12,18 @@ export default async function AdminPaymentsPage() {
     formattedDate: new Date(payment.timestamp).toLocaleDateString(),
   }));
   
+  const memberTotalPayments = members.reduce((acc, member) => {
+    const total = rawPayments
+      .filter(p => p.memberId === member.id && p.status === 'Completed')
+      .reduce((sum, p) => sum + p.amount, 0);
+    acc[member.id] = total;
+    return acc;
+  }, {} as Record<string, number>);
+
   return (
     <>
       <PageHeader title="Payments" description="Create, view, and manage all payment records." />
-      <PaymentsTable payments={payments} members={members} />
+      <PaymentsTable payments={payments} members={members} memberTotalPayments={memberTotalPayments} />
     </>
   );
 }
