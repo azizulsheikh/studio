@@ -1,0 +1,75 @@
+
+[
+  {
+    "id": "payment-1",
+    "memberId": "member-1",
+    "amount": 75.50,
+    "timestamp": "2024-05-01T12:00:00Z",
+    "paymentMethod": "Credit Card",
+    "description": "Monthly Subscription"
+  },
+  {
+    "id": "payment-2",
+    "memberId": "member-2",
+    "amount": 120.00,
+    "timestamp": "2024-05-02T15:30:00Z",
+    "paymentMethod": "PayPal",
+    "description": "Product Purchase"
+  },
+  {
+    "id": "payment-3",
+    "memberId": "member-1",
+    "amount": 250.00,
+    "timestamp": "2024-05-03T09:45:00Z",
+    "paymentMethod": "Bank Transfer",
+    "description": "Service Fee"
+  },
+  {
+    "id": "payment-4",
+    "memberId": "member-3",
+    "amount": 50.25,
+    "timestamp": "2024-05-04T18:00:00Z",
+    "paymentMethod": "Credit Card",
+    "description": "One-time Purchase"
+  },
+  {
+    "id": "payment-5",
+    "memberId": "member-4",
+    "amount": 99.99,
+    "timestamp": "2024-05-05T11:20:00Z",
+    "paymentMethod": "PayPal",
+    "description": "Annual Fee"
+  },
+  {
+    "id": "payment-6",
+    "memberId": "member-2",
+    "amount": 500.00,
+    "timestamp": "2024-05-06T14:10:00Z",
+    "paymentMethod": "Credit Card",
+    "description": "Large Order"
+  },
+  {
+    "id": "payment-7",
+    "memberId": "member-3",
+    "amount": 15.00,
+    "timestamp": "2024-05-07T20:05:00Z",
+    "paymentMethod": "PayPal",
+    "description": "Digital Download"
+  },
+  {
+    "id": "payment-8",
+    "memberId": "member-1",
+    "amount": 3000.00,
+    "timestamp": "2024-05-08T23:50:00Z",
+    "paymentMethod": "Bank Transfer",
+    "description": "Suspiciously large late-night transfer"
+  },
+    {
+    "id": "payment-9",
+    "memberId": "member-4",
+    "amount": 45.00,
+    "timestamp": "2024-05-09T08:00:00Z",
+    "paymentMethod": "Credit Card",
+    "description": "Early morning coffee run equipment"
+  }
+]

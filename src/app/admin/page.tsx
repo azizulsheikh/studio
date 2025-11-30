@@ -1,0 +1,28 @@
+import { getDashboardData } from '@/lib/data';
+import DashboardCards from '@/components/admin/dashboard-cards';
+import PrioritizedPaymentsTable from '@/components/admin/prioritized-payments-table';
+import { prioritizeFraudulentPayments } from '@/ai/flows/prioritize-fraudulent-payments';
+import PageHeader from '@/components/page-header';
+
+export const dynamic = 'force-dynamic';
+
+export default async function AdminDashboardPage() {
+  const { totalPayments, totalMembers, allPayments } = await getDashboardData();
+  const prioritizedPayments = await prioritizeFraudulentPayments(allPayments);
+
+  return (
+    <>
+      <PageHeader title="Admin Dashboard" description="An overview of your payment ecosystem." />
+      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+        <DashboardCards
+          totalPayments={totalPayments}
+          totalMembers={totalMembers}
+          totalTransactions={allPayments.length}
+        />
+      </div>
+      <div className="mt-8">
+        <PrioritizedPaymentsTable payments={prioritizedPayments} />
+      </div>
+    </>
+  );
+}

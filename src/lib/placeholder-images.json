@@ -1,3 +1,34 @@
 {
-  "placeholderImages": []
+  "placeholderImages": [
+    {
+      "id": "member-1",
+      "description": "Alice's profile picture",
+      "imageUrl": "https://images.unsplash.com/flagged/photo-1559855603-ce4c8f480d76?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw5fHx3b21hbiUyMHNtaWxpbmd8ZW58MHx8fHwxNzY0NDQ1NDk2fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "woman smiling"
+    },
+    {
+      "id": "member-2",
+      "description": "Bob's profile picture",
+      "imageUrl": "https://images.unsplash.com/photo-1714356590155-f896e15d21c9?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw5fHxtYW4lMjBnbGFzc2VzfGVufDB8fHx8MTc2NDQ3NTg0NXww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "man glasses"
+    },
+    {
+      "id": "member-3",
+      "description": "Charlie's profile picture",
+      "imageUrl": "https://images.unsplash.com/photo-1530071698688-1e4c30e1ea52?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxwZXJzb24lMjB0aGlua2luZ3xlbnwwfHx8fDE3NjQ0MDk2OTB8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "person thinking"
+    },
+    {
+      "id": "member-4",
+      "description": "Diana's profile picture",
+      "imageUrl": "https://images.unsplash.com/photo-1534413298607-48ba59e8a06d?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw2fHx3b21hbiUyMG5hdHVyZXxlbnwwfHx8fDE3NjQ0NTYyOTV8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "woman nature"
+    },
+    {
+      "id": "new-member-avatar",
+      "description": "Default new member avatar",
+      "imageUrl": "https://images.unsplash.com/photo-1644224076179-31d622e21511?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxhYnN0cmFjdCUyMHNoYXBlfGVufDB8fHx8MTc2NDUwMjczN3ww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "abstract shape"
+    }
+  ]
 }
