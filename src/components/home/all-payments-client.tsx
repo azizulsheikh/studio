@@ -11,15 +11,21 @@ import {
 } from '@/components/ui/table';
 import {
   Card,
-  CardContent
+  CardContent,
+  CardHeader,
+  CardTitle,
 } from '@/components/ui/card';
 import { Member, Payment } from '@/lib/definitions';
 import { Badge } from '../ui/badge';
 import { cn } from '@/lib/utils';
 import { getPaymentsByMemberId } from '@/lib/actions';
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
 import ProfileCard from '../member/profile-card';
 import { Skeleton } from '../ui/skeleton';
+import PaymentHistoryTable from '../member/payment-history-table';
+import { ScrollArea } from '../ui/scroll-area';
+import { Button } from '../ui/button';
+import { ArrowLeft } from 'lucide-react';
 
 type EnrichedPayment = Payment & { totalPayment: number };
 
@@ -32,6 +38,7 @@ export default function AllPaymentsClient({ initialPayments, initialMembers }: P
   const [payments, setPayments] = React.useState<EnrichedPayment[]>([]);
   const [loading, setLoading] = React.useState(true);
   const [selectedMember, setSelectedMember] = React.useState<Member | null>(null);
+  const [memberPayments, setMemberPayments] = React.useState<Payment[]>([]);
   const [isDialogOpen, setIsDialogOpen] = React.useState(false);
   
   const memberMap = React.useMemo(() => new Map(initialMembers.map((m) => [m.id, m])), [initialMembers]);
@@ -88,6 +95,8 @@ export default function AllPaymentsClient({ initialPayments, initialMembers }: P
     const member = memberMap.get(memberId);
     if (member) {
       setSelectedMember(member);
+      const payments = await getPaymentsByMemberId(member.id);
+      setMemberPayments(payments);
       setIsDialogOpen(true);
     }
   };
@@ -155,15 +164,35 @@ export default function AllPaymentsClient({ initialPayments, initialMembers }: P
     </Card>
 
     <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-        <DialogContent className="sm:max-w-md">
+        <DialogContent className="sm:max-w-4xl">
             {selectedMember && (
                 <>
                     <DialogHeader>
                         <DialogTitle>{selectedMember.name}'s Profile</DialogTitle>
                     </DialogHeader>
-                    <div className="py-4">
-                        <ProfileCard member={selectedMember} />
+                    <div className="grid gap-8 lg:grid-cols-3 py-4">
+                        <div className="lg:col-span-1">
+                            <ProfileCard member={selectedMember} />
+                        </div>
+                        <div className="lg:col-span-2">
+                          <Card>
+                            <CardHeader>
+                              <CardTitle>Payment History</CardTitle>
+                            </CardHeader>
+                            <CardContent>
+                              <ScrollArea className="h-96">
+                                  <PaymentHistoryTable payments={memberPayments} />
+                              </ScrollArea>
+                            </CardContent>
+                          </Card>
+                        </div>
                     </div>
+                    <DialogFooter>
+                        <Button variant="outline" onClick={() => setIsDialogOpen(false)}>
+                            <ArrowLeft className="mr-2 h-4 w-4" />
+                            Back
+                        </Button>
+                    </DialogFooter>
                 </>
             )}
         </DialogContent>
