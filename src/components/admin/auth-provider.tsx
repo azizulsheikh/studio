@@ -94,7 +94,7 @@ export function AdminAuthProvider({ children }: { children: React.ReactNode }) {
           <div className="grid gap-4 py-4">
             <Input
               id="password"
-              type="password"
+              type="text"
               placeholder="Enter password..."
               value={password}
               onChange={(e) => setPassword(e.target.value)}
