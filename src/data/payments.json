@@ -86,5 +86,13 @@
     "status": "Pending",
     "id": "payment-1764520465090",
     "timestamp": "2025-11-30T16:34:25.090Z"
+  },
+  {
+    "memberId": "member-1",
+    "amount": 200,
+    "paymentMethod": "Credit Card",
+    "status": "Completed",
+    "id": "payment-1764520677493",
+    "timestamp": "2025-11-30T16:37:57.493Z"
   }
 ]

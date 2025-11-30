@@ -15,7 +15,6 @@ import {
   CardContent,
   CardHeader,
   CardTitle,
-  CardDescription,
 } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import {
@@ -37,7 +36,7 @@ import {
 } from '@/components/ui/alert-dialog';
 import { MoreHorizontal, PlusCircle, ArrowLeft } from 'lucide-react';
 import { Member, Payment } from '@/lib/definitions';
-import { deletePayment, getPaymentsByMemberId } from '@/lib/actions';
+import { deletePayment } from '@/lib/actions';
 import { useToast } from '@/hooks/use-toast';
 import { PaymentForm } from './payment-form';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
@@ -46,6 +45,7 @@ import { cn } from '@/lib/utils';
 import ProfileCard from '../member/profile-card';
 import PaymentHistoryTable from '../member/payment-history-table';
 import { ScrollArea } from '../ui/scroll-area';
+import { getPaymentsByMemberId } from '@/lib/actions';
 
 type PaymentWithFormattedDate = Payment & { formattedDate: string };
 
