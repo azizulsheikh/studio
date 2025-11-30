@@ -25,6 +25,13 @@ export default function AdminSidebar({ isMobile = false }: { isMobile?: boolean 
   if (isMobile) {
     return (
         <>
+            <Link
+                href="/"
+                className="flex items-center gap-4 px-2.5 text-muted-foreground hover:text-foreground"
+            >
+                <ArrowLeft className="h-5 w-5" />
+                Go to Homepage
+            </Link>
             {navItems.map((item) => (
                 <Link
                     key={item.href}
@@ -38,13 +45,6 @@ export default function AdminSidebar({ isMobile = false }: { isMobile?: boolean 
                     {item.label}
                 </Link>
             ))}
-            <Link
-                href="/"
-                className="flex items-center gap-4 px-2.5 text-muted-foreground hover:text-foreground"
-            >
-                <ArrowLeft className="h-5 w-5" />
-                Go to Homepage
-            </Link>
         </>
     )
   }
@@ -57,6 +57,18 @@ export default function AdminSidebar({ isMobile = false }: { isMobile?: boolean 
             <Logo className="text-primary" />
             <span className="sr-only">ClarityPay</span>
           </Link>
+          <Tooltip>
+            <TooltipTrigger asChild>
+                <Link
+                    href="/"
+                    className={cn(commonLinkClasses, "h-9 w-9 text-muted-foreground")}
+                >
+                    <ArrowLeft className="h-5 w-5" />
+                    <span className="sr-only">Go to Homepage</span>
+                </Link>
+            </TooltipTrigger>
+            <TooltipContent side="right">Go to Homepage</TooltipContent>
+          </Tooltip>
           {navItems.map((item) => (
             <Tooltip key={item.href}>
               <TooltipTrigger asChild>
@@ -74,20 +86,6 @@ export default function AdminSidebar({ isMobile = false }: { isMobile?: boolean 
               <TooltipContent side="right">{item.label}</TooltipContent>
             </Tooltip>
           ))}
-        </nav>
-        <nav className="mt-auto flex flex-col items-center gap-4 px-2 sm:py-5">
-            <Tooltip>
-                <TooltipTrigger asChild>
-                    <Link
-                        href="/"
-                        className={cn(commonLinkClasses, "h-9 w-9 text-muted-foreground")}
-                    >
-                        <ArrowLeft className="h-5 w-5" />
-                        <span className="sr-only">Go to Homepage</span>
-                    </Link>
-                </TooltipTrigger>
-                <TooltipContent side="right">Go to Homepage</TooltipContent>
-            </Tooltip>
         </nav>
       </TooltipProvider>
     </aside>
