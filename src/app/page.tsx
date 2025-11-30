@@ -33,7 +33,7 @@ export default async function Home() {
         </section>
 
         <section className="container mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+          <div className="grid grid-cols-1 max-w-2xl mx-auto">
             <Card className="hover:shadow-lg transition-shadow duration-300">
               <CardHeader className="flex flex-row items-center justify-between pb-2">
                 <CardTitle className="text-lg font-medium">Admin Dashboard</CardTitle>
@@ -46,23 +46,6 @@ export default async function Home() {
                 <Button asChild>
                   <Link href="/admin">
                     Go to Admin View <ArrowRight className="ml-2 h-4 w-4" />
-                  </Link>
-                </Button>
-              </CardContent>
-            </Card>
-
-            <Card className="hover:shadow-lg transition-shadow duration-300">
-              <CardHeader className="flex flex-row items-center justify-between pb-2">
-                <CardTitle className="text-lg font-medium">Member View</CardTitle>
-                <Users className="w-6 h-6 text-accent" />
-              </CardHeader>
-              <CardContent>
-                <p className="text-sm text-muted-foreground mb-4">
-                  View your profile, payment history, and access the shared payment dashboard.
-                </p>
-                <Button asChild variant="outline">
-                  <Link href="/member-view">
-                    Go to Member View <ArrowRight className="ml-2 h-4 w-4" />
                   </Link>
                 </Button>
               </CardContent>
