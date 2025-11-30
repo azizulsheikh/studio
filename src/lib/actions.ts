@@ -5,6 +5,7 @@ import { Member, MemberSchema, Payment, PaymentSchema } from './definitions';
 import fs from 'fs/promises';
 import path from 'path';
 import { revalidatePath } from 'next/cache';
+import { getPayments as getAllPayments, getMembers as getAllMembers } from './data';
 
 const membersPath = path.join(process.cwd(), 'src', 'data', 'members.json');
 const paymentsPath = path.join(process.cwd(), 'src', 'data', 'payments.json');
@@ -21,6 +22,11 @@ async function readData<T>(filePath: string): Promise<T[]> {
 
 async function writeData<T>(filePath: string, data: T[]): Promise<void> {
   await fs.writeFile(filePath, JSON.stringify(data, null, 2), 'utf-8');
+}
+
+export async function getPaymentsByMemberId(memberId: string): Promise<Payment[]> {
+    const payments = await getAllPayments();
+    return payments.filter(p => p.memberId === memberId);
 }
 
 // Member Actions

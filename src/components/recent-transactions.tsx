@@ -1,3 +1,6 @@
+'use client';
+
+import * as React from 'react';
 import Image from 'next/image';
 import {
   Table,
@@ -12,10 +15,18 @@ import { Member, Payment } from '@/lib/definitions';
 import { PlaceHolderImages } from '@/lib/placeholder-images';
 import { cn } from '@/lib/utils';
 import PageHeader from './page-header';
+import { getPaymentsByMemberId } from '@/lib/actions';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import ProfileCard from './member/profile-card';
+import PaymentHistoryTable from './member/payment-history-table';
 
 type RecentTransaction = Payment & { memberName: string; memberImage: string; memberImageHint: string; };
 
 export default function RecentTransactions({ payments, members }: { payments: Payment[]; members: Member[] }) {
+  const [selectedMember, setSelectedMember] = React.useState<Member | null>(null);
+  const [memberPayments, setMemberPayments] = React.useState<Payment[]>([]);
+  const [isDialogOpen, setIsDialogOpen] = React.useState(false);
+  
   const memberMap = new Map(members.map((m) => [m.id, m]));
   const memberImages = PlaceHolderImages.filter(p => p.id.startsWith('member-'));
 
@@ -30,12 +41,23 @@ export default function RecentTransactions({ payments, members }: { payments: Pa
     }
   });
 
+  const handleMemberClick = async (memberId: string) => {
+    const member = memberMap.get(memberId);
+    if (member) {
+      setSelectedMember(member);
+      const payments = await getPaymentsByMemberId(memberId);
+      setMemberPayments(payments);
+      setIsDialogOpen(true);
+    }
+  };
+
 
   return (
+    <>
     <section className="container mx-auto px-4 sm:px-6 lg:px-8 py-16">
         <PageHeader 
             title="Recent Transactions"
-            description="A list of the most recent payments."
+            description="A list of the most recent payments. Click a member to see their profile."
             className="mb-4"
         />
       <div className="rounded-lg border bg-card text-card-foreground shadow-sm">
@@ -51,7 +73,7 @@ export default function RecentTransactions({ payments, members }: { payments: Pa
           </TableHeader>
           <TableBody>
             {transactions.map((transaction) => (
-              <TableRow key={transaction.id}>
+              <TableRow key={transaction.id} onClick={() => handleMemberClick(transaction.memberId)} className="cursor-pointer">
                 <TableCell>
                   <div className="flex items-center gap-3">
                     <Image
@@ -96,5 +118,26 @@ export default function RecentTransactions({ payments, members }: { payments: Pa
         </Table>
       </div>
     </section>
+
+    <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+        <DialogContent className="sm:max-w-4xl">
+            {selectedMember && (
+                <>
+                    <DialogHeader>
+                        <DialogTitle>{selectedMember.name}'s Profile</DialogTitle>
+                    </DialogHeader>
+                    <div className="grid gap-8 lg:grid-cols-3 py-4">
+                        <div className="lg:col-span-1">
+                            <ProfileCard member={selectedMember} />
+                        </div>
+                        <div className="lg:col-span-2">
+                            <PaymentHistoryTable payments={memberPayments} />
+                        </div>
+                    </div>
+                </>
+            )}
+        </DialogContent>
+    </Dialog>
+    </>
   );
 }
