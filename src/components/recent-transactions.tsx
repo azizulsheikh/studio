@@ -20,9 +20,14 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/u
 import ProfileCard from './member/profile-card';
 import PaymentHistoryTable from './member/payment-history-table';
 
-type RecentTransaction = Payment & { memberName: string; memberImage: string; memberImageHint: string; };
+type RecentTransaction = Payment & {
+  memberName: string;
+  memberImage: string;
+  memberImageHint: string;
+  formattedDate: string;
+};
 
-export default function RecentTransactions({ payments, members }: { payments: Payment[]; members: Member[] }) {
+export default function RecentTransactions({ transactions, members }: { transactions: (Payment & {formattedDate: string})[]; members: Member[] }) {
   const [selectedMember, setSelectedMember] = React.useState<Member | null>(null);
   const [memberPayments, setMemberPayments] = React.useState<Payment[]>([]);
   const [isDialogOpen, setIsDialogOpen] = React.useState(false);
@@ -30,14 +35,15 @@ export default function RecentTransactions({ payments, members }: { payments: Pa
   const memberMap = new Map(members.map((m) => [m.id, m]));
   const memberImages = PlaceHolderImages.filter(p => p.id.startsWith('member-'));
 
-  const transactions: RecentTransaction[] = payments.slice(0, 5).map(payment => {
+  const processedTransactions: RecentTransaction[] = transactions.map(payment => {
     const member = memberMap.get(payment.memberId);
     const avatar = memberImages.find(img => img.id === payment.memberId) ?? PlaceHolderImages.find(p => p.id === 'new-member-avatar');
     return {
         ...payment,
         memberName: member?.name || 'Unknown Member',
         memberImage: avatar?.imageUrl || 'https://placehold.co/40x40',
-        memberImageHint: avatar?.imageHint || 'placeholder'
+        memberImageHint: avatar?.imageHint || 'placeholder',
+        formattedDate: payment.formattedDate,
     }
   });
 
@@ -72,7 +78,7 @@ export default function RecentTransactions({ payments, members }: { payments: Pa
             </TableRow>
           </TableHeader>
           <TableBody>
-            {transactions.map((transaction) => (
+            {processedTransactions.map((transaction) => (
               <TableRow key={transaction.id} onClick={() => handleMemberClick(transaction.memberId)} className="cursor-pointer">
                 <TableCell>
                   <div className="flex items-center gap-3">
@@ -93,7 +99,7 @@ export default function RecentTransactions({ payments, members }: { payments: Pa
                 <TableCell>${transaction.amount.toFixed(2)}</TableCell>
                 <TableCell>{transaction.paymentMethod}</TableCell>
                 <TableCell>
-                  {new Date(transaction.timestamp).toLocaleDateString()}
+                  {transaction.formattedDate}
                 </TableCell>
                 <TableCell>
                   <Badge

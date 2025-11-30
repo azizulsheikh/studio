@@ -9,6 +9,11 @@ import RecentTransactions from '@/components/recent-transactions';
 export default async function Home() {
   const [payments, members] = await Promise.all([getPayments(), getMembers()]);
 
+  const recentTransactions = payments.slice(0, 5).map(p => ({
+    ...p,
+    formattedDate: new Date(p.timestamp).toLocaleDateString(),
+  }));
+
   return (
     <div className="flex flex-col min-h-screen">
       <header className="container mx-auto px-4 sm:px-6 lg:px-8 py-4">
@@ -71,7 +76,7 @@ export default async function Home() {
           </div>
         </section>
 
-        <RecentTransactions payments={payments} members={members} />
+        <RecentTransactions transactions={recentTransactions} members={members} />
 
       </main>
 
