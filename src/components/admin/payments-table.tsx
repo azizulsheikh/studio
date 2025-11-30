@@ -1,6 +1,7 @@
 'use client';
 
 import * as React from 'react';
+import { useRouter } from 'next/navigation';
 import {
   Table,
   TableBody,
@@ -36,7 +37,7 @@ import {
 } from '@/components/ui/alert-dialog';
 import { MoreHorizontal, PlusCircle, ArrowLeft } from 'lucide-react';
 import { Member, Payment } from '@/lib/definitions';
-import { deletePayment, getPaymentsByMemberId } from '@/lib/actions';
+import { deletePayment } from '@/lib/actions';
 import { useToast } from '@/hooks/use-toast';
 import { PaymentForm } from './payment-form';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
@@ -45,11 +46,13 @@ import { cn } from '@/lib/utils';
 import ProfileCard from '../member/profile-card';
 import PaymentHistoryTable from '../member/payment-history-table';
 import { ScrollArea } from '../ui/scroll-area';
+import { getPaymentsByMemberId } from '@/lib/data';
 
 type PaymentWithFormattedDate = Payment & { formattedDate: string };
 
 export default function PaymentsTable({ payments, members, memberTotalPayments }: { payments: PaymentWithFormattedDate[]; members: Member[], memberTotalPayments: Record<string, number> }) {
   const { toast } = useToast();
+  const router = useRouter();
   const [dialogOpen, setDialogOpen] = React.useState(false);
   const [detailsDialogOpen, setDetailsDialogOpen] = React.useState(false);
   const [alertDialogOpen, setAlertDialogOpen] = React.useState(false);
@@ -64,6 +67,11 @@ export default function PaymentsTable({ payments, members, memberTotalPayments }
     toast({
       title: result.message,
     });
+  };
+
+  const handleFinished = () => {
+    setDialogOpen(false);
+    router.refresh();
   };
 
   const handleViewDetails = async (payment: Payment) => {
@@ -97,7 +105,6 @@ export default function PaymentsTable({ payments, members, memberTotalPayments }
         <div className="flex justify-between items-center">
             <div>
                 <CardTitle>All Payments</CardTitle>
-                <CardDescription>A list of all payments in the system.</CardDescription>
             </div>
             <Button size="sm" className="gap-1" onClick={openCreateDialog}>
                 <PlusCircle className="h-3.5 w-3.5" />
@@ -175,7 +182,7 @@ export default function PaymentsTable({ payments, members, memberTotalPayments }
           <DialogHeader>
             <DialogTitle>{selectedPayment ? 'Edit Payment' : 'Add New Payment'}</DialogTitle>
           </DialogHeader>
-          <PaymentForm payment={selectedPayment} members={members} onFinished={() => setDialogOpen(false)} />
+          <PaymentForm payment={selectedPayment} members={members} onFinished={handleFinished} />
         </DialogContent>
       </Dialog>
       <AlertDialog open={alertDialogOpen} onOpenChange={setAlertDialogOpen}>
