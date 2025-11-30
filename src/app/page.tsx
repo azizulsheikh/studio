@@ -25,8 +25,8 @@ export default async function Home() {
             <div className="grid gap-6 items-center">
               <div className="flex flex-col justify-center space-y-4 text-center">
                 <div className="space-y-2">
-                  <h1 className="text-3xl font-bold tracking-tighter sm:text-5xl xl:text-6xl/none bg-clip-text text-transparent bg-gradient-to-r from-green-400 to-blue-500">
-                    The easiest way to manage beef for EID festival
+                  <h1 className="text-3xl font-bold tracking-tighter sm:text-5xl xl:text-6xl/none bg-clip-text text-transparent bg-gradient-to-r from-primary to-foreground">
+                    The easiest way to manage your beef business
                   </h1>
                   <p className="max-w-[600px] text-muted-foreground mx-auto md:text-xl">
                     The easiest way to manage your beef business.
