@@ -45,7 +45,11 @@ import { MemberForm } from './member-form';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { PlaceHolderImages } from '@/lib/placeholder-images';
 
-export default function MembersTable({ members }: { members: Member[] }) {
+type MemberWithFormattedDate = Member & {
+  formattedJoinDate: string;
+};
+
+export default function MembersTable({ members }: { members: MemberWithFormattedDate[] }) {
   const router = useRouter();
   const { toast } = useToast();
   const [dialogOpen, setDialogOpen] = React.useState(false);
@@ -134,7 +138,7 @@ export default function MembersTable({ members }: { members: Member[] }) {
                 <TableCell>{member.email}</TableCell>
                 <TableCell>{member.role}</TableCell>
                 <TableCell className="hidden md:table-cell">
-                  {new Date(member.joinDate).toLocaleDateString()}
+                  {member.formattedJoinDate}
                 </TableCell>
                 <TableCell>
                   <DropdownMenu>
