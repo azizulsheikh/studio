@@ -3,6 +3,7 @@
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
+import * as React from 'react';
 
 import { Button } from '@/components/ui/button';
 import {
@@ -46,10 +47,33 @@ export function MemberForm({ member, onFinished }: MemberFormProps) {
     },
   });
 
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>, fieldChange: (value: string) => void) => {
+    e.preventDefault();
+    const file = e.target.files?.[0];
+    if (file) {
+      if (file.size > 4 * 1024 * 1024) { // 4MB limit
+        toast({
+          title: 'File too large',
+          description: 'Please upload an image smaller than 4MB.',
+          variant: 'destructive',
+        });
+        return;
+      }
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        fieldChange(reader.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+
   async function onSubmit(data: z.infer<typeof FormSchema>) {
     const formData = new FormData();
     Object.entries(data).forEach(([key, value]) => {
-      formData.append(key, value);
+        if (value) {
+            formData.append(key, value);
+        }
     });
 
     let result;
@@ -107,15 +131,23 @@ export function MemberForm({ member, onFinished }: MemberFormProps) {
             </FormItem>
           )}
         />
-        <FormField control={form.control} name="imageUrl" render={({ field }) => (
-            <FormItem>
-                <FormLabel>Profile Picture URL (Optional)</FormLabel>
-                <FormControl>
-                    <Input placeholder="https://example.com/image.png" {...field} />
-                </FormControl>
-                <FormMessage />
-            </FormItem>
-        )} />
+        <FormField
+            control={form.control}
+            name="imageUrl"
+            render={({ field }) => (
+                <FormItem>
+                    <FormLabel>Profile Picture</FormLabel>
+                    <FormControl>
+                        <Input 
+                            type="file" 
+                            accept="image/png, image/jpeg, image/gif"
+                            onChange={(e) => handleFileChange(e, field.onChange)}
+                        />
+                    </FormControl>
+                    <FormMessage />
+                </FormItem>
+            )} 
+        />
         <FormField
           control={form.control}
           name="role"
