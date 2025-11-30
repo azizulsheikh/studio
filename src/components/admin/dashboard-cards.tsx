@@ -13,9 +13,9 @@ type DashboardCardsProps = {
 };
 
 export default function DashboardCards({ totalPayments, totalMembers, totalTransactions }: DashboardCardsProps) {
-    const formattedTotalPayments = new Intl.NumberFormat('en-US', {
+    const formattedTotalPayments = new Intl.NumberFormat('en-BD', {
         style: 'currency',
-        currency: 'USD',
+        currency: 'BDT',
       }).format(totalPayments);
 
   return (

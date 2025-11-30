@@ -96,7 +96,7 @@ export default function RecentTransactions({ transactions, members }: { transact
                     </div>
                   </div>
                 </TableCell>
-                <TableCell>${transaction.amount.toFixed(2)}</TableCell>
+                <TableCell>৳{transaction.amount.toFixed(2)}</TableCell>
                 <TableCell>{transaction.paymentMethod}</TableCell>
                 <TableCell>
                   {transaction.formattedDate}

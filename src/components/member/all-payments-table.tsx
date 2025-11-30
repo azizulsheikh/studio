@@ -38,7 +38,7 @@ import {
                         {new Date(payment.timestamp).toLocaleDateString()}
                     </TableCell>
                     <TableCell className="font-medium">{payment.memberId}</TableCell>
-                    <TableCell className="text-right">${payment.amount.toFixed(2)}</TableCell>
+                    <TableCell className="text-right">৳{payment.amount.toFixed(2)}</TableCell>
                     </TableRow>
                 ))}
             </TableBody>

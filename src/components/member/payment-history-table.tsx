@@ -25,7 +25,7 @@ import {
                 {new Date(payment.timestamp).toLocaleDateString()}
                 </TableCell>
                 <TableCell>{payment.paymentMethod}</TableCell>
-                <TableCell className="text-right">${payment.amount.toFixed(2)}</TableCell>
+                <TableCell className="text-right">৳{payment.amount.toFixed(2)}</TableCell>
             </TableRow>
             )) : (
             <TableRow>

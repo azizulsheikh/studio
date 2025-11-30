@@ -59,7 +59,7 @@ export default function PrioritizedPaymentsTable({ payments }: { payments: Payme
                     </Badge>
                   </TableCell>
                   <TableCell className="font-medium">{payment.memberId}</TableCell>
-                  <TableCell>${payment.amount.toFixed(2)}</TableCell>
+                  <TableCell>৳{payment.amount.toFixed(2)}</TableCell>
                   <TableCell>
                     {new Date(payment.timestamp).toLocaleDateString()}
                   </TableCell>
