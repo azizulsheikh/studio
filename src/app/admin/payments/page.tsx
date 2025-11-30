@@ -5,7 +5,12 @@ import PageHeader from '@/components/page-header';
 export const dynamic = 'force-dynamic';
 
 export default async function AdminPaymentsPage() {
-  const [payments, members] = await Promise.all([getPayments(), getMembers()]);
+  const [rawPayments, members] = await Promise.all([getPayments(), getMembers()]);
+
+  const payments = rawPayments.map(payment => ({
+    ...payment,
+    formattedDate: new Date(payment.timestamp).toLocaleDateString(),
+  }));
   
   return (
     <>

@@ -43,7 +43,9 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/u
 import { Badge } from '../ui/badge';
 import { cn } from '@/lib/utils';
 
-export default function PaymentsTable({ payments, members }: { payments: Payment[]; members: Member[] }) {
+type PaymentWithFormattedDate = Payment & { formattedDate: string };
+
+export default function PaymentsTable({ payments, members }: { payments: PaymentWithFormattedDate[]; members: Member[] }) {
   const { toast } = useToast();
   const [dialogOpen, setDialogOpen] = React.useState(false);
   const [alertDialogOpen, setAlertDialogOpen] = React.useState(false);
@@ -128,7 +130,7 @@ export default function PaymentsTable({ payments, members }: { payments: Payment
                   </Badge>
                 </TableCell>
                 <TableCell className="hidden md:table-cell">
-                  {new Date(payment.timestamp).toLocaleDateString()}
+                  {payment.formattedDate}
                 </TableCell>
                 <TableCell>{payment.description}</TableCell>
                 <TableCell>
