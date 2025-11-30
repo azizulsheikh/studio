@@ -36,6 +36,15 @@ export const PaymentSchema = z.object({
   status: z.enum(['Completed', 'Pending', 'Failed']),
 });
 
+export const ExpenseSchema = z.object({
+  id: z.string(),
+  description: z.string().min(1, { message: 'Description is required.' }),
+  amount: z.coerce.number().positive({ message: 'Amount must be positive.' }),
+  date: z.string(),
+});
+
+export type Expense = z.infer<typeof ExpenseSchema>;
+
 export type PrioritizedPayment = Payment & {
   riskScore: number;
   riskLevel: 'Low' | 'Medium' | 'High';

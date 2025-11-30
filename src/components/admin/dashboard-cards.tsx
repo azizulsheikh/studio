@@ -4,19 +4,24 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
-import { DollarSign, Users, CreditCard } from 'lucide-react';
+import { DollarSign, Users, CreditCard, MinusCircle } from 'lucide-react';
 
 type DashboardCardsProps = {
   totalPayments: number;
   totalMembers: number;
   totalTransactions: number;
+  totalExpenses: number;
 };
 
-export default function DashboardCards({ totalPayments, totalMembers, totalTransactions }: DashboardCardsProps) {
+export default function DashboardCards({ totalPayments, totalMembers, totalTransactions, totalExpenses }: DashboardCardsProps) {
     const formattedTotalPayments = new Intl.NumberFormat('en-BD', {
         style: 'currency',
         currency: 'BDT',
       }).format(totalPayments);
+    const formattedTotalExpenses = new Intl.NumberFormat('en-BD', {
+      style: 'currency',
+      currency: 'BDT',
+    }).format(totalExpenses);
 
   return (
     <>
@@ -29,6 +34,18 @@ export default function DashboardCards({ totalPayments, totalMembers, totalTrans
           <div className="text-2xl font-bold">{formattedTotalPayments}</div>
           <p className="text-xs text-muted-foreground">
             Total amount processed
+          </p>
+        </CardContent>
+      </Card>
+      <Card>
+        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+          <CardTitle className="text-sm font-medium">Total Expenses</CardTitle>
+          <MinusCircle className="h-4 w-4 text-muted-foreground" />
+        </CardHeader>
+        <CardContent>
+          <div className="text-2xl font-bold">{formattedTotalExpenses}</div>
+          <p className="text-xs text-muted-foreground">
+            Total expenses recorded
           </p>
         </CardContent>
       </Card>

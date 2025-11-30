@@ -8,13 +8,14 @@ import {
   TooltipTrigger,
 } from '@/components/ui/tooltip';
 import Logo from '@/components/logo';
-import { Home, Users, CreditCard, ArrowLeft } from 'lucide-react';
+import { Home, Users, CreditCard, ArrowLeft, Receipt } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 const navItems = [
   { href: '/admin', icon: Home, label: 'Dashboard' },
   { href: '/admin/members', icon: Users, label: 'Members' },
   { href: '/admin/payments', icon: CreditCard, label: 'Payments' },
+  { href: '/admin/expenses', icon: Receipt, label: 'Expenses' },
 ];
 
 export default function AdminSidebar({ isMobile = false }: { isMobile?: boolean }) {

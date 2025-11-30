@@ -1,14 +1,16 @@
 'use server';
 
 import { z } from 'zod';
-import { Member, MemberSchema, Payment, PaymentSchema } from './definitions';
+import { Member, MemberSchema, Payment, PaymentSchema, Expense, ExpenseSchema } from './definitions';
 import fs from 'fs/promises';
 import path from 'path';
 import { revalidatePath } from 'next/cache';
-import { getPayments as getAllPayments, getMembers as getAllMembers } from './data';
+import { getPayments as getAllPayments, getMembers as getAllMembers, getExpenses as getAllExpenses } from './data';
 
 const membersPath = path.join(process.cwd(), 'src', 'data', 'members.json');
 const paymentsPath = path.join(process.cwd(), 'src', 'data', 'payments.json');
+const expensesPath = path.join(process.cwd(), 'src', 'data', 'expenses.json');
+
 
 async function readData<T>(filePath: string): Promise<T[]> {
   try {
@@ -26,6 +28,10 @@ async function writeData<T>(filePath: string, data: T[]): Promise<void> {
 
 export async function getPayments(): Promise<Payment[]> {
     return getAllPayments();
+}
+
+export async function getExpenses(): Promise<Expense[]> {
+  return getAllExpenses();
 }
 
 export async function getMembers(): Promise<Member[]> {
@@ -68,6 +74,7 @@ export async function createMember(formData: FormData) {
   
   revalidatePath('/admin/members');
   revalidatePath('/admin/payments');
+  revalidatePath('/admin');
   revalidatePath('/');
   revalidatePath('/member-view');
   return { message: 'Member created successfully.' };
@@ -93,6 +100,7 @@ export async function updateMember(formData: FormData) {
   revalidatePath('/admin/members');
   revalidatePath('/admin/payments');
   revalidatePath(`/admin/members/${id}`);
+  revalidatePath('/admin');
   revalidatePath('/');
   revalidatePath('/member-view');
   revalidatePath(`/members/${id}`);
@@ -110,6 +118,7 @@ export async function deleteMember(id: string) {
   
   revalidatePath('/admin/members');
   revalidatePath('/admin/payments');
+  revalidatePath('/admin');
   revalidatePath('/');
   revalidatePath('/member-view');
   return { message: 'Member and all associated payments deleted successfully.' };
@@ -144,8 +153,8 @@ export async function createPayment(formData: FormData) {
     
     revalidatePath('/admin/payments');
     revalidatePath('/admin');
-    revalidatePath('/member-view');
     revalidatePath('/');
+    revalidatePath('/member-view');
     return { message: 'Payment processed successfully.' };
   }
 
@@ -170,8 +179,8 @@ export async function updatePayment(formData: FormData) {
   
   revalidatePath('/admin/payments');
   revalidatePath('/admin');
-  revalidatePath('/member-view');
   revalidatePath('/');
+  revalidatePath('/member-view');
   return { message: 'Payment updated successfully.' };
 }
 
@@ -182,7 +191,49 @@ export async function deletePayment(id: string) {
 
   revalidatePath('/admin/payments');
   revalidatePath('/admin');
-  revalidatePath('/member-view');
   revalidatePath('/');
+  revalidatePath('/member-view');
   return { message: 'Payment deleted successfully.' };
+}
+
+
+// Expense Actions
+const CreateExpenseSchema = ExpenseSchema.omit({ id: true, date: true });
+
+export async function createExpense(formData: FormData) {
+  const rawData: {[k: string]: any} = Object.fromEntries(formData.entries());
+  rawData.amount = parseFloat(rawData.amount);
+  const validatedFields = CreateExpenseSchema.safeParse(rawData);
+  
+  if (!validatedFields.success) {
+    return {
+      errors: validatedFields.error.flatten().fieldErrors,
+      message: 'Failed to create expense.',
+    };
+  }
+  
+  const data = validatedFields.data;
+  const expenses = await readData<Expense>(expensesPath);
+
+  const newExpense: Expense = {
+    ...data,
+    id: `expense-${Date.now()}`,
+    date: new Date().toISOString(),
+  };
+  expenses.push(newExpense);
+  await writeData(expensesPath, expenses);
+  
+  revalidatePath('/admin/expenses');
+  revalidatePath('/admin');
+  return { message: 'Expense added successfully.' };
+}
+
+export async function deleteExpense(id: string) {
+  let expenses = await readData<Expense>(expensesPath);
+  expenses = expenses.filter(e => e.id !== id);
+  await writeData(expensesPath, expenses);
+
+  revalidatePath('/admin/expenses');
+  revalidatePath('/admin');
+  return { message: 'Expense deleted successfully.' };
 }

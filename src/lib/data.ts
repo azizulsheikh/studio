@@ -1,9 +1,10 @@
-import { Member, Payment } from '@/lib/definitions';
+import { Member, Payment, Expense } from '@/lib/definitions';
 import fs from 'fs/promises';
 import path from 'path';
 
 const membersPath = path.join(process.cwd(), 'src', 'data', 'members.json');
 const paymentsPath = path.join(process.cwd(), 'src', 'data', 'payments.json');
+const expensesPath = path.join(process.cwd(), 'src', 'data', 'expenses.json');
 
 async function readData<T>(filePath: string): Promise<T[]> {
   try {
@@ -32,6 +33,11 @@ export async function getPayments(): Promise<Payment[]> {
   return payments.sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime());
 }
 
+export async function getExpenses(): Promise<Expense[]> {
+  const expenses = await readData<Expense>(expensesPath);
+  return expenses.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+}
+
 export async function getPaymentById(id: string): Promise<Payment | undefined> {
     const payments = await getPayments();
     return payments.find(p => p.id === id);
@@ -43,13 +49,15 @@ export async function getPaymentsByMemberId(memberId: string): Promise<Payment[]
 }
 
 export async function getDashboardData() {
-    const [payments, members] = await Promise.all([getPayments(), getMembers()]);
+    const [payments, members, expenses] = await Promise.all([getPayments(), getMembers(), getExpenses()]);
     
     const completedPayments = payments.filter(payment => payment.status === 'Completed');
 
     const totalPayments = completedPayments.reduce((sum, payment) => sum + payment.amount, 0);
       
     const recentTransactions = payments.slice(0, 5);
+
+    const totalExpenses = expenses.reduce((sum, expense) => sum + expense.amount, 0);
     
     return {
         totalPayments,
@@ -58,5 +66,6 @@ export async function getDashboardData() {
         allPayments: payments,
         allMembers: members,
         totalTransactions: completedPayments.length,
+        totalExpenses,
     };
 }
