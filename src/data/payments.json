@@ -1,35 +1,11 @@
 [
   {
-    "id": "payment-1",
-    "memberId": "member-1",
-    "amount": 150,
-    "timestamp": "2024-07-20T12:00:00Z",
-    "paymentMethod": "Credit Card",
-    "status": "Completed"
-  },
-  {
-    "id": "payment-2",
-    "memberId": "member-2",
-    "amount": 75.5,
-    "timestamp": "2024-07-19T15:30:00Z",
-    "paymentMethod": "PayPal",
-    "status": "Completed"
-  },
-  {
     "id": "payment-3",
     "memberId": "member-3",
     "amount": 300,
     "timestamp": "2024-07-19T09:45:00Z",
     "paymentMethod": "Bank Transfer",
     "status": "Pending"
-  },
-  {
-    "id": "payment-4",
-    "memberId": "member-1",
-    "amount": 200,
-    "timestamp": "2024-07-19T18:00:00Z",
-    "paymentMethod": "Credit Card",
-    "status": "Completed"
   },
   {
     "id": "payment-5",
@@ -65,34 +41,10 @@
   },
   {
     "memberId": "member-1",
-    "amount": 1000,
-    "paymentMethod": "Credit Card",
-    "status": "Completed",
-    "id": "payment-1764518655376",
-    "timestamp": "2025-11-30T16:04:15.376Z"
-  },
-  {
-    "memberId": "member-1",
-    "amount": 500,
-    "paymentMethod": "Credit Card",
-    "status": "Completed",
-    "id": "payment-1764519938547",
-    "timestamp": "2025-11-30T16:25:38.547Z"
-  },
-  {
-    "memberId": "member-1",
-    "amount": 400,
-    "paymentMethod": "Credit Card",
-    "status": "Pending",
-    "id": "payment-1764520465090",
-    "timestamp": "2025-11-30T16:34:25.090Z"
-  },
-  {
-    "memberId": "member-1",
-    "amount": 200,
+    "amount": 1400,
     "paymentMethod": "Credit Card",
     "status": "Completed",
     "id": "payment-1764520677493",
-    "timestamp": "2025-11-30T16:37:57.493Z"
+    "timestamp": "2025-11-30T16:54:26.760Z"
   }
 ]

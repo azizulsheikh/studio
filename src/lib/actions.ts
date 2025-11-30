@@ -109,31 +109,13 @@ export async function createPayment(formData: FormData) {
   const data = validatedFields.data;
   const payments = await readData<Payment>(paymentsPath);
 
-  // Find the latest payment for the member
-  const memberPayments = payments.filter(p => p.memberId === data.memberId).sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime());
-  const latestPayment = memberPayments[0];
-
-  if (latestPayment) {
-    // If a payment exists, update the latest one
-    const updatedPayment = {
-      ...latestPayment,
-      amount: latestPayment.amount + data.amount,
-      timestamp: new Date().toISOString(),
-      paymentMethod: data.paymentMethod,
-      status: data.status,
-    };
-    const updatedPayments = payments.map(p => p.id === latestPayment.id ? updatedPayment : p);
-    await writeData(paymentsPath, updatedPayments);
-  } else {
-    // If no payment exists, create a new one
-    const newPayment: Payment = {
-      ...data,
-      id: `payment-${Date.now()}`,
-      timestamp: new Date().toISOString(),
-    };
-    payments.push(newPayment);
-    await writeData(paymentsPath, payments);
-  }
+  const newPayment: Payment = {
+    ...data,
+    id: `payment-${Date.now()}`,
+    timestamp: new Date().toISOString(),
+  };
+  payments.push(newPayment);
+  await writeData(paymentsPath, payments);
   
   revalidatePath('/');
   revalidatePath('/admin/payments');
