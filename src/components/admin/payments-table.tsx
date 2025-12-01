@@ -14,7 +14,6 @@ import {
   CardContent,
   CardHeader,
   CardTitle,
-  CardDescription,
 } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import {
@@ -47,7 +46,6 @@ import PaymentHistoryTable from '../member/payment-history-table';
 export default function PaymentsTable({ summaries, members, allPayments, onDataChange }: { summaries: MemberPaymentSummary[]; members: Member[], allPayments: Payment[], onDataChange: () => void }) {
   const { toast } = useToast();
   const [dialogOpen, setDialogOpen] = React.useState(false);
-  const [alertDialogOpen, setAlertDialogOpen] = React.useState(false);
   const [historyDialogOpen, setHistoryDialogOpen] = React.useState(false);
   const [selectedPayment, setSelectedPayment] = React.useState<Payment | null>(null);
   const [selectedMemberPayments, setSelectedMemberPayments] = React.useState<Payment[]>([]);
@@ -65,7 +63,7 @@ export default function PaymentsTable({ summaries, members, allPayments, onDataC
   };
 
   const openHistoryDialog = (memberId: string, memberName: string) => {
-    const memberPayments = allPayments.filter(p => p.memberId === memberId);
+    const memberPayments = allPayments.filter(p => p.memberId === memberId).sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime());
     setSelectedMemberPayments(memberPayments);
     setSelectedMemberName(memberName);
     setHistoryDialogOpen(true);
@@ -78,26 +76,22 @@ export default function PaymentsTable({ summaries, members, allPayments, onDataC
 
   return (
     <Card>
-      <CardHeader>
-        <div className="flex justify-between items-center">
-            <div>
-                <CardTitle>All Payments</CardTitle>
-                <CardDescription>A list of all member payments.</CardDescription>
-            </div>
-            <Button size="sm" className="gap-1" onClick={openCreateDialog}>
-                <PlusCircle className="h-3.5 w-3.5" />
-                <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">
-                    Add Payment
-                </span>
-            </Button>
-        </div>
+      <CardHeader className="flex flex-row items-center justify-between">
+        <CardTitle>All Payments</CardTitle>
+        <Button size="sm" className="gap-1" onClick={openCreateDialog}>
+            <PlusCircle className="h-3.5 w-3.5" />
+            <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">
+                Add Payment
+            </span>
+        </Button>
       </CardHeader>
       <CardContent>
         <Table>
           <TableHeader>
             <TableRow>
               <TableHead>Member</TableHead>
-              <TableHead>Total Paid</TableHead>
+              <TableHead>Monthly Amount</TableHead>
+              <TableHead>Total Payment</TableHead>
               <TableHead>Last Method</TableHead>
               <TableHead>Last Status</TableHead>
               <TableHead>Last Payment Date</TableHead>
@@ -110,6 +104,7 @@ export default function PaymentsTable({ summaries, members, allPayments, onDataC
             {summaries.map((summary) => (
               <TableRow key={summary.memberId}>
                 <TableCell className="font-medium">{summary.memberName}</TableCell>
+                <TableCell>৳{summary.monthlyAmount.toFixed(2)}</TableCell>
                 <TableCell>৳{summary.totalPayment.toFixed(2)}</TableCell>
                 <TableCell>{summary.lastMethod}</TableCell>
                 <TableCell>
