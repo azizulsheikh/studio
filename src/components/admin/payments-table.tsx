@@ -42,10 +42,9 @@ import { PaymentForm } from './payment-form';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Badge } from '../ui/badge';
 import { cn } from '@/lib/utils';
+import { MemberPaymentSummary } from './payments-client-page';
 
-type EnrichedPayment = Payment & { memberName: string; totalPaid: number };
-
-export default function PaymentsTable({ payments, members, onDataChange }: { payments: EnrichedPayment[]; members: Member[], onDataChange: () => void }) {
+export default function PaymentsTable({ summaries, members, onDataChange }: { summaries: MemberPaymentSummary[]; members: Member[], onDataChange: () => void }) {
   const { toast } = useToast();
   const [dialogOpen, setDialogOpen] = React.useState(false);
   const [alertDialogOpen, setAlertDialogOpen] = React.useState(false);
@@ -64,14 +63,16 @@ export default function PaymentsTable({ payments, members, onDataChange }: { pay
     onDataChange();
   };
 
-  const openEditDialog = (payment: Payment) => {
+  const openEditDialog = (payment: Payment | null) => {
      setSelectedPayment(payment);
      setDialogOpen(true);
   };
 
-  const openDeleteDialog = (payment: Payment) => {
-    setSelectedPayment(payment);
-    setAlertDialogOpen(true);
+  const openDeleteDialog = (payment: Payment | null) => {
+    if (payment) {
+      setSelectedPayment(payment);
+      setAlertDialogOpen(true);
+    }
   };
 
   const openCreateDialog = () => {
@@ -85,7 +86,7 @@ export default function PaymentsTable({ payments, members, onDataChange }: { pay
         <div className="flex justify-between items-center">
             <div>
                 <CardTitle>All Payments</CardTitle>
-                <CardDescription>A list of all individual payment records.</CardDescription>
+                <CardDescription>A list of all member payments.</CardDescription>
             </div>
             <Button size="sm" className="gap-1" onClick={openCreateDialog}>
                 <PlusCircle className="h-3.5 w-3.5" />
@@ -100,42 +101,42 @@ export default function PaymentsTable({ payments, members, onDataChange }: { pay
           <TableHeader>
             <TableRow>
               <TableHead>Member</TableHead>
-              <TableHead>Amount</TableHead>
-              <TableHead>Total Paid</TableHead>
-              <TableHead>Method</TableHead>
-              <TableHead>Status</TableHead>
-              <TableHead className="hidden md:table-cell">Date</TableHead>
+              <TableHead>Monthly Amount</TableHead>
+              <TableHead>Total Payment</TableHead>
+              <TableHead>Last Method</TableHead>
+              <TableHead>Last Status</TableHead>
+              <TableHead>Last Payment Date</TableHead>
               <TableHead>
                 <span className="sr-only">Actions</span>
               </TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
-            {payments.map((payment) => (
-              <TableRow key={payment.id}>
-                <TableCell className="font-medium">{payment.memberName}</TableCell>
-                <TableCell>৳{payment.amount.toFixed(2)}</TableCell>
-                <TableCell>৳{payment.totalPaid.toFixed(2)}</TableCell>
-                <TableCell>{payment.paymentMethod}</TableCell>
+            {summaries.map((summary) => (
+              <TableRow key={summary.memberId}>
+                <TableCell className="font-medium">{summary.memberName}</TableCell>
+                <TableCell>৳{summary.monthlyAmount.toFixed(2)}</TableCell>
+                <TableCell>৳{summary.totalPayment.toFixed(2)}</TableCell>
+                <TableCell>{summary.lastMethod}</TableCell>
                 <TableCell>
                   <Badge
                       variant={
-                        payment.status === 'Completed'
+                        summary.lastStatus === 'Completed'
                           ? 'default'
-                          : payment.status === 'Failed'
+                          : summary.lastStatus === 'Failed'
                           ? 'destructive'
                           : 'secondary'
                       }
                       className={cn(
-                          payment.status === 'Completed' && 'bg-primary text-primary-foreground',
-                          payment.status === 'Pending' && 'bg-gray-200 text-gray-800',
+                          summary.lastStatus === 'Completed' && 'bg-primary text-primary-foreground',
+                          summary.lastStatus === 'Pending' && 'bg-gray-200 text-gray-800',
                       )}
                     >
-                      {payment.status}
+                      {summary.lastStatus}
                     </Badge>
                 </TableCell>
-                <TableCell className="hidden md:table-cell">
-                  {new Date(payment.timestamp).toLocaleDateString()}
+                <TableCell>
+                  {summary.lastPaymentDate}
                 </TableCell>
                 <TableCell>
                   <DropdownMenu>
@@ -147,8 +148,8 @@ export default function PaymentsTable({ payments, members, onDataChange }: { pay
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end">
                       <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                      <DropdownMenuItem onSelect={() => openEditDialog(payment)}>Edit</DropdownMenuItem>
-                      <DropdownMenuItem onSelect={() => openDeleteDialog(payment)} className="text-destructive">Delete</DropdownMenuItem>
+                      <DropdownMenuItem onSelect={() => openEditDialog(summary.latestPayment)}>Edit</DropdownMenuItem>
+                      <DropdownMenuItem onSelect={() => openDeleteDialog(summary.latestPayment)} className="text-destructive">Delete</DropdownMenuItem>
                     </DropdownMenuContent>
                   </DropdownMenu>
                 </TableCell>

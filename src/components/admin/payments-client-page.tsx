@@ -6,7 +6,17 @@ import PaymentsTable from '@/components/admin/payments-table';
 import { Member, Payment } from '@/lib/definitions';
 import { Skeleton } from '@/components/ui/skeleton';
 
-type EnrichedPayment = Payment & { memberName: string; totalPaid: number };
+export type MemberPaymentSummary = {
+  memberId: string;
+  memberName: string;
+  imageUrl?: string;
+  monthlyAmount: number;
+  totalPayment: number;
+  lastMethod: string;
+  lastStatus: 'Completed' | 'Pending' | 'Failed' | 'N/A';
+  lastPaymentDate: string;
+  latestPayment: Payment | null;
+};
 
 type PaymentsClientPageProps = {
     initialPayments: Payment[];
@@ -14,39 +24,54 @@ type PaymentsClientPageProps = {
 };
 
 export default function PaymentsClientPage({ initialPayments, initialMembers }: PaymentsClientPageProps) {
-  const [payments, setPayments] = React.useState<EnrichedPayment[]>([]);
+  const [summaries, setSummaries] = React.useState<MemberPaymentSummary[]>([]);
   const [members, setMembers] = React.useState<Member[]>(initialMembers);
   const [loading, setLoading] = React.useState(true);
 
-  const processData = React.useCallback((allPayments: Payment[], allMembers: Member[]): EnrichedPayment[] => {
+  const processData = React.useCallback((allPayments: Payment[], allMembers: Member[]): MemberPaymentSummary[] => {
     const memberMap = new Map(allMembers.map(m => [m.id, m]));
-    const memberTotals: Record<string, number> = {};
 
-    for (const member of allMembers) {
-      memberTotals[member.id] = allPayments
-        .filter(p => p.memberId === member.id && p.status === 'Completed')
+    return allMembers.map(member => {
+      const paymentsForMember = allPayments
+        .filter(p => p.memberId === member.id)
+        .sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime());
+
+      const totalPayment = paymentsForMember
+        .filter(p => p.status === 'Completed')
         .reduce((sum, p) => sum + p.amount, 0);
-    }
 
-    return allPayments.map(p => ({
-      ...p,
-      memberName: memberMap.get(p.memberId)?.name || 'Unknown',
-      totalPaid: memberTotals[p.memberId] || 0,
-    }));
+      const latestPayment = paymentsForMember[0] || null;
+
+      return {
+        memberId: member.id,
+        memberName: member.name,
+        imageUrl: member.imageUrl,
+        monthlyAmount: latestPayment?.amount || 0,
+        totalPayment: totalPayment,
+        lastMethod: latestPayment?.paymentMethod || 'N/A',
+        lastStatus: latestPayment?.status || 'N/A',
+        lastPaymentDate: latestPayment ? new Date(latestPayment.timestamp).toLocaleDateString() : 'N/A',
+        latestPayment: latestPayment
+      };
+    }).sort((a, b) => {
+        if (!a.latestPayment) return 1;
+        if (!b.latestPayment) return -1;
+        return new Date(b.latestPayment.timestamp).getTime() - new Date(a.latestPayment.timestamp).getTime()
+    });
   }, []);
 
   const fetchData = React.useCallback(async () => {
     setLoading(true);
     const [rawPayments, allMembers] = await Promise.all([getPayments(), getMembers()]);
-    const processedPayments = processData(rawPayments, allMembers);
-    setPayments(processedPayments);
+    const processedSummaries = processData(rawPayments, allMembers);
+    setSummaries(processedSummaries);
     setMembers(allMembers);
     setLoading(false);
   }, [processData]);
 
   React.useEffect(() => {
     const processed = processData(initialPayments, initialMembers);
-    setPayments(processed);
+    setSummaries(processed);
     setMembers(initialMembers);
     setLoading(false);
   }, [initialPayments, initialMembers, processData]);
@@ -63,6 +88,6 @@ export default function PaymentsClientPage({ initialPayments, initialMembers }: 
   }
 
   return (
-    <PaymentsTable payments={payments} members={members} onDataChange={fetchData} />
+    <PaymentsTable summaries={summaries} members={members} onDataChange={fetchData} />
   );
 }
