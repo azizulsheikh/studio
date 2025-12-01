@@ -36,19 +36,25 @@ import {
 } from '@/components/ui/alert-dialog';
 import { MoreHorizontal, PlusCircle } from 'lucide-react';
 import { Member, Payment } from '@/lib/definitions';
-import { deletePayment } from '@/lib/actions';
+import { deletePayment, getPaymentsByMemberId } from '@/lib/actions';
 import { useToast } from '@/hooks/use-toast';
 import { PaymentForm } from './payment-form';
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import { Badge } from '../ui/badge';
 import { cn } from '@/lib/utils';
 import { MemberPaymentSummary } from './payments-client-page';
+import PaymentHistoryTable from '../member/payment-history-table';
+import { getPayments } from '@/lib/data-client';
 
-export default function PaymentsTable({ summaries, members, onDataChange }: { summaries: MemberPaymentSummary[]; members: Member[], onDataChange: () => void }) {
+export default function PaymentsTable({ summaries, members, allPayments, onDataChange }: { summaries: MemberPaymentSummary[]; members: Member[], allPayments: Payment[], onDataChange: () => void }) {
   const { toast } = useToast();
   const [dialogOpen, setDialogOpen] = React.useState(false);
   const [alertDialogOpen, setAlertDialogOpen] = React.useState(false);
+  const [historyDialogOpen, setHistoryDialogOpen] = React.useState(false);
   const [selectedPayment, setSelectedPayment] = React.useState<Payment | null>(null);
+  const [selectedMemberPayments, setSelectedMemberPayments] = React.useState<Payment[]>([]);
+  const [selectedMemberName, setSelectedMemberName] = React.useState<string>('');
+
 
   const handleDelete = async (id: string) => {
     const result = await deletePayment(id);
@@ -73,6 +79,13 @@ export default function PaymentsTable({ summaries, members, onDataChange }: { su
       setSelectedPayment(payment);
       setAlertDialogOpen(true);
     }
+  };
+
+  const openHistoryDialog = (memberId: string, memberName: string) => {
+    const memberPayments = allPayments.filter(p => p.memberId === memberId);
+    setSelectedMemberPayments(memberPayments);
+    setSelectedMemberName(memberName);
+    setHistoryDialogOpen(true);
   };
 
   const openCreateDialog = () => {
@@ -148,6 +161,7 @@ export default function PaymentsTable({ summaries, members, onDataChange }: { su
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end">
                       <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                      <DropdownMenuItem onSelect={() => openHistoryDialog(summary.memberId, summary.memberName)}>View Details</DropdownMenuItem>
                       <DropdownMenuItem onSelect={() => openEditDialog(summary.latestPayment)}>Edit</DropdownMenuItem>
                       <DropdownMenuItem onSelect={() => openDeleteDialog(summary.latestPayment)} className="text-destructive">Delete</DropdownMenuItem>
                     </DropdownMenuContent>
@@ -180,6 +194,19 @@ export default function PaymentsTable({ summaries, members, onDataChange }: { su
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
+      <Dialog open={historyDialogOpen} onOpenChange={setHistoryDialogOpen}>
+        <DialogContent className="sm:max-w-3xl">
+          <DialogHeader>
+            <DialogTitle>Payment History for {selectedMemberName}</DialogTitle>
+            <DialogDescription>
+              Here is a complete list of all payments made by {selectedMemberName}.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="mt-4">
+            <PaymentHistoryTable payments={selectedMemberPayments} />
+          </div>
+        </DialogContent>
+      </Dialog>
     </Card>
   );
 }

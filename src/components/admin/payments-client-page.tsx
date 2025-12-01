@@ -25,21 +25,20 @@ type PaymentsClientPageProps = {
 
 export default function PaymentsClientPage({ initialPayments, initialMembers }: PaymentsClientPageProps) {
   const [summaries, setSummaries] = React.useState<MemberPaymentSummary[]>([]);
+  const [allPayments, setAllPayments] = React.useState<Payment[]>(initialPayments);
   const [members, setMembers] = React.useState<Member[]>(initialMembers);
   const [loading, setLoading] = React.useState(true);
 
-  const processData = React.useCallback((allPayments: Payment[], allMembers: Member[]): MemberPaymentSummary[] => {
-    const memberMap = new Map(allMembers.map(m => [m.id, m]));
-
+  const processData = React.useCallback((payments: Payment[], allMembers: Member[]): MemberPaymentSummary[] => {
     return allMembers.map(member => {
-      const paymentsForMember = allPayments
+      const paymentsForMember = payments
         .filter(p => p.memberId === member.id)
         .sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime());
 
       const totalPayment = paymentsForMember
         .filter(p => p.status === 'Completed')
         .reduce((sum, p) => sum + p.amount, 0);
-
+      
       const latestPayment = paymentsForMember[0] || null;
 
       return {
@@ -65,6 +64,7 @@ export default function PaymentsClientPage({ initialPayments, initialMembers }: 
     const [rawPayments, allMembers] = await Promise.all([getPayments(), getMembers()]);
     const processedSummaries = processData(rawPayments, allMembers);
     setSummaries(processedSummaries);
+    setAllPayments(rawPayments);
     setMembers(allMembers);
     setLoading(false);
   }, [processData]);
@@ -72,6 +72,7 @@ export default function PaymentsClientPage({ initialPayments, initialMembers }: 
   React.useEffect(() => {
     const processed = processData(initialPayments, initialMembers);
     setSummaries(processed);
+    setAllPayments(initialPayments);
     setMembers(initialMembers);
     setLoading(false);
   }, [initialPayments, initialMembers, processData]);
@@ -88,6 +89,6 @@ export default function PaymentsClientPage({ initialPayments, initialMembers }: 
   }
 
   return (
-    <PaymentsTable summaries={summaries} members={members} onDataChange={fetchData} />
+    <PaymentsTable summaries={summaries} members={members} allPayments={allPayments} onDataChange={fetchData} />
   );
 }
