@@ -57,50 +57,26 @@
   },
   {
     "memberId": "member-1764524957923",
-    "amount": 1800,
-    "paymentMethod": "Credit Card",
+    "amount": 500,
+    "paymentMethod": "Cash",
     "status": "Completed",
-    "id": "payment-1764525092256",
-    "timestamp": "2025-11-30T17:51:32.256Z"
-  },
-  {
-    "memberId": "member-1764524957923",
-    "amount": 300,
-    "paymentMethod": "Credit Card",
-    "status": "Completed",
-    "id": "payment-1764525115803",
-    "timestamp": "2025-11-30T17:51:55.803Z"
+    "id": "payment-1764591821287",
+    "timestamp": "2025-12-01T12:23:41.287Z"
   },
   {
     "memberId": "member-1764533665132",
-    "amount": 800,
-    "paymentMethod": "Credit Card",
+    "amount": 1000,
+    "paymentMethod": "Cash",
     "status": "Completed",
-    "id": "payment-1764533707379",
-    "timestamp": "2025-11-30T20:15:07.379Z"
+    "id": "payment-1764591837266",
+    "timestamp": "2025-12-01T12:23:57.266Z"
   },
   {
     "memberId": "member-1764590863540",
-    "amount": 800000,
-    "paymentMethod": "Bank Transfer",
-    "status": "Completed",
-    "id": "payment-1764590898741",
-    "timestamp": "2025-12-01T12:08:18.741Z"
-  },
-  {
-    "memberId": "member-1764533665132",
-    "amount": 900045,
-    "paymentMethod": "Cash",
-    "status": "Pending",
-    "id": "payment-1764590939212",
-    "timestamp": "2025-12-01T12:08:59.212Z"
-  },
-  {
-    "memberId": "member-1764533665132",
-    "amount": 60548,
+    "amount": 1500,
     "paymentMethod": "Cash",
     "status": "Completed",
-    "id": "payment-1764591087179",
-    "timestamp": "2025-12-01T12:11:27.179Z"
+    "id": "payment-1764591855349",
+    "timestamp": "2025-12-01T12:24:15.349Z"
   }
 ]

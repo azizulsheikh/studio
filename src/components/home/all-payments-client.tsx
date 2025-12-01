@@ -37,37 +37,58 @@ export default function AllPaymentsClient({ initialPayments, initialMembers }: P
   const memberImages = PlaceHolderImages.filter(p => p.id.startsWith('member-'));
   const newMemberImage = PlaceHolderImages.find(p => p.id === 'new-member-avatar');
 
-  const processData = React.useCallback((allPayments: Payment[]): EnrichedPayment[] => {
-    const memberTotalPayments = initialMembers.reduce((acc, member) => {
+  const processData = React.useCallback((allPayments: Payment[], allMembers: Member[]): EnrichedPayment[] => {
+    const memberTotalPayments = allMembers.reduce((acc, member) => {
       const total = allPayments
         .filter(p => p.memberId === member.id && p.status === 'Completed')
         .reduce((sum, p) => sum + p.amount, 0);
       acc[member.id] = total;
       return acc;
     }, {} as Record<string, number>);
-
-    const latestPayments = new Map<string, Payment>();
+  
+    const memberPayments = new Map<string, Payment[]>();
     for (const payment of allPayments) {
-      const existing = latestPayments.get(payment.memberId);
-      if (!existing || new Date(payment.timestamp) > new Date(existing.timestamp)) {
-        latestPayments.set(payment.memberId, payment);
+      if (!memberPayments.has(payment.memberId)) {
+        memberPayments.set(payment.memberId, []);
       }
+      memberPayments.get(payment.memberId)!.push(payment);
     }
-    
-    const enrichedLatestPayments = Array.from(latestPayments.values()).map(payment => ({
-      ...payment,
-      totalPayment: memberTotalPayments[payment.memberId] || 0,
-    }));
-
-    return enrichedLatestPayments.sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime());
-  }, [initialMembers]);
+  
+    const enrichedPayments = allMembers.map(member => {
+      const paymentsForMember = (memberPayments.get(member.id) || [])
+        .sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime());
+      
+      const latestPayment = paymentsForMember[0];
+      const totalPayment = memberTotalPayments[member.id] || 0;
+  
+      if (latestPayment) {
+        return {
+          ...latestPayment,
+          totalPayment: totalPayment,
+        };
+      } else {
+        // Create a dummy payment record for members with no payments
+        return {
+          id: `dummy-${member.id}`,
+          memberId: member.id,
+          amount: 0,
+          timestamp: new Date().toISOString(),
+          paymentMethod: 'Cash', // Or some default/N/A value
+          status: 'Pending',   // Or some default/N/A value
+          totalPayment: 0,
+        } as EnrichedPayment;
+      }
+    });
+  
+    return enrichedPayments.sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime());
+  }, []);
 
 
   React.useEffect(() => {
-    const processed = processData(initialPayments);
+    const processed = processData(initialPayments, initialMembers);
     setPayments(processed);
     setLoading(false);
-  }, [initialPayments, processData]);
+  }, [initialPayments, initialMembers, processData]);
 
   const handleMemberClick = (memberId: string) => {
     router.push(`/members/${memberId}`);

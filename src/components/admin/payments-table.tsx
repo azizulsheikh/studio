@@ -177,7 +177,7 @@ export default function PaymentsTable({ payments, members, onDataChange }: { pay
                     <DropdownMenuContent align="end">
                       <DropdownMenuLabel>Actions</DropdownMenuLabel>
                       <DropdownMenuItem onSelect={() => handleViewDetails(payment)}>View Details</DropdownMenuItem>
-                      <DropdownMenuItem onSelect={() => openEditDialog(payment)}>Edit Last Payment</DropdownMenuItem>
+                      <DropdownMenuItem onSelect={() => openEditDialog(payment)} disabled={payment.id.startsWith('dummy-')}>Edit Last Payment</DropdownMenuItem>
                       {!payment.id.startsWith('dummy-') && (
                         <DropdownMenuItem onSelect={() => openDeleteDialog(payment)} className="text-destructive">Delete Last Payment</DropdownMenuItem>
                       )}
