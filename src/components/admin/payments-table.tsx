@@ -36,7 +36,6 @@ import {
 } from '@/components/ui/alert-dialog';
 import { MoreHorizontal, PlusCircle } from 'lucide-react';
 import { Member, Payment } from '@/lib/definitions';
-import { deletePayment, getPaymentsByMemberId } from '@/lib/actions';
 import { useToast } from '@/hooks/use-toast';
 import { PaymentForm } from './payment-form';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
@@ -44,7 +43,6 @@ import { Badge } from '../ui/badge';
 import { cn } from '@/lib/utils';
 import { MemberPaymentSummary } from './payments-client-page';
 import PaymentHistoryTable from '../member/payment-history-table';
-import { getPayments } from '@/lib/data-client';
 
 export default function PaymentsTable({ summaries, members, allPayments, onDataChange }: { summaries: MemberPaymentSummary[]; members: Member[], allPayments: Payment[], onDataChange: () => void }) {
   const { toast } = useToast();
@@ -56,14 +54,6 @@ export default function PaymentsTable({ summaries, members, allPayments, onDataC
   const [selectedMemberName, setSelectedMemberName] = React.useState<string>('');
 
 
-  const handleDelete = async (id: string) => {
-    const result = await deletePayment(id);
-    toast({
-      title: result.message,
-    });
-    onDataChange();
-  };
-
   const handleFinished = () => {
     setDialogOpen(false);
     onDataChange();
@@ -72,13 +62,6 @@ export default function PaymentsTable({ summaries, members, allPayments, onDataC
   const openEditDialog = (payment: Payment | null) => {
      setSelectedPayment(payment);
      setDialogOpen(true);
-  };
-
-  const openDeleteDialog = (payment: Payment | null) => {
-    if (payment) {
-      setSelectedPayment(payment);
-      setAlertDialogOpen(true);
-    }
   };
 
   const openHistoryDialog = (memberId: string, memberName: string) => {
@@ -114,8 +97,7 @@ export default function PaymentsTable({ summaries, members, allPayments, onDataC
           <TableHeader>
             <TableRow>
               <TableHead>Member</TableHead>
-              <TableHead>Monthly Amount</TableHead>
-              <TableHead>Total Payment</TableHead>
+              <TableHead>Total Paid</TableHead>
               <TableHead>Last Method</TableHead>
               <TableHead>Last Status</TableHead>
               <TableHead>Last Payment Date</TableHead>
@@ -128,7 +110,6 @@ export default function PaymentsTable({ summaries, members, allPayments, onDataC
             {summaries.map((summary) => (
               <TableRow key={summary.memberId}>
                 <TableCell className="font-medium">{summary.memberName}</TableCell>
-                <TableCell>৳{summary.monthlyAmount.toFixed(2)}</TableCell>
                 <TableCell>৳{summary.totalPayment.toFixed(2)}</TableCell>
                 <TableCell>{summary.lastMethod}</TableCell>
                 <TableCell>
@@ -162,8 +143,7 @@ export default function PaymentsTable({ summaries, members, allPayments, onDataC
                     <DropdownMenuContent align="end">
                       <DropdownMenuLabel>Actions</DropdownMenuLabel>
                       <DropdownMenuItem onSelect={() => openHistoryDialog(summary.memberId, summary.memberName)}>View Details</DropdownMenuItem>
-                      <DropdownMenuItem onSelect={() => openEditDialog(summary.latestPayment)}>Edit</DropdownMenuItem>
-                      <DropdownMenuItem onSelect={() => openDeleteDialog(summary.latestPayment)} className="text-destructive">Delete</DropdownMenuItem>
+                      <DropdownMenuItem onSelect={() => openEditDialog(summary.latestPayment)}>Edit Last Payment</DropdownMenuItem>
                     </DropdownMenuContent>
                   </DropdownMenu>
                 </TableCell>
@@ -180,20 +160,6 @@ export default function PaymentsTable({ summaries, members, allPayments, onDataC
           <PaymentForm payment={selectedPayment} members={members} onFinished={handleFinished} />
         </DialogContent>
       </Dialog>
-      <AlertDialog open={alertDialogOpen} onOpenChange={setAlertDialogOpen}>
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
-            <AlertDialogDescription>
-              This action cannot be undone. This will permanently delete this payment record.
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel>Cancel</AlertDialogCancel>
-            <AlertDialogAction onClick={() => selectedPayment && handleDelete(selectedPayment.id)}>Continue</AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
       <Dialog open={historyDialogOpen} onOpenChange={setHistoryDialogOpen}>
         <DialogContent className="sm:max-w-3xl">
           <DialogHeader>
@@ -203,7 +169,7 @@ export default function PaymentsTable({ summaries, members, allPayments, onDataC
             </DialogDescription>
           </DialogHeader>
           <div className="mt-4">
-            <PaymentHistoryTable payments={selectedMemberPayments} />
+            <PaymentHistoryTable payments={selectedMemberPayments} onDataChange={onDataChange} />
           </div>
         </DialogContent>
       </Dialog>
