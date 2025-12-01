@@ -58,6 +58,8 @@ export async function getDashboardData() {
     const recentTransactions = payments.slice(0, 5);
 
     const totalExpenses = expenses.reduce((sum, expense) => sum + expense.amount, 0);
+
+    const remainingBalance = totalPayments - totalExpenses;
     
     return {
         totalPayments,
@@ -67,5 +69,6 @@ export async function getDashboardData() {
         allMembers: members,
         totalTransactions: completedPayments.length,
         totalExpenses,
+        remainingBalance,
     };
 }

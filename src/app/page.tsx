@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { ArrowRight, ShieldCheck, Users, DollarSign, MinusCircle } from 'lucide-react';
+import { ArrowRight, ShieldCheck, Users, DollarSign, MinusCircle, Wallet } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import Logo from '@/components/logo';
 import { getPayments, getMembers, getDashboardData } from '@/lib/data';
@@ -8,7 +8,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
 export default async function Home() {
   const [payments, members, dashboardData] = await Promise.all([getPayments(), getMembers(), getDashboardData()]);
-  const { totalPayments, totalExpenses } = dashboardData;
+  const { totalPayments, totalExpenses, remainingBalance } = dashboardData;
 
   const formattedTotalPayments = new Intl.NumberFormat('en-BD', {
     style: 'currency',
@@ -18,6 +18,10 @@ export default async function Home() {
     style: 'currency',
     currency: 'BDT',
   }).format(totalExpenses);
+  const formattedRemainingBalance = new Intl.NumberFormat('en-BD', {
+    style: 'currency',
+    currency: 'BDT',
+  }).format(remainingBalance);
 
   return (
     <div className="flex flex-col min-h-screen">
@@ -76,6 +80,18 @@ export default async function Home() {
                       </CardContent>
                   </Card>
                 </Link>
+                <Card>
+                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                        <CardTitle className="text-sm font-medium">Remaining Balance</CardTitle>
+                        <Wallet className="h-4 w-4 text-muted-foreground" />
+                    </CardHeader>
+                    <CardContent>
+                        <div className="text-2xl font-bold">{formattedRemainingBalance}</div>
+                        <p className="text-xs text-muted-foreground">
+                        Current available funds
+                        </p>
+                    </CardContent>
+                </Card>
             </div>
         </section>
 
