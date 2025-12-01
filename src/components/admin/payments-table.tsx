@@ -43,13 +43,13 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/u
 import { Badge } from '../ui/badge';
 import { cn } from '@/lib/utils';
 
-export default function PaymentsTable({ payments, members, onDataChange }: { payments: Payment[]; members: Member[], onDataChange: () => void }) {
+type EnrichedPayment = Payment & { memberName: string; totalPaid: number };
+
+export default function PaymentsTable({ payments, members, onDataChange }: { payments: EnrichedPayment[]; members: Member[], onDataChange: () => void }) {
   const { toast } = useToast();
   const [dialogOpen, setDialogOpen] = React.useState(false);
   const [alertDialogOpen, setAlertDialogOpen] = React.useState(false);
   const [selectedPayment, setSelectedPayment] = React.useState<Payment | null>(null);
-
-  const memberMap = new Map(members.map((m) => [m.id, m]));
 
   const handleDelete = async (id: string) => {
     const result = await deletePayment(id);
@@ -101,6 +101,7 @@ export default function PaymentsTable({ payments, members, onDataChange }: { pay
             <TableRow>
               <TableHead>Member</TableHead>
               <TableHead>Amount</TableHead>
+              <TableHead>Total Paid</TableHead>
               <TableHead>Method</TableHead>
               <TableHead>Status</TableHead>
               <TableHead className="hidden md:table-cell">Date</TableHead>
@@ -110,14 +111,11 @@ export default function PaymentsTable({ payments, members, onDataChange }: { pay
             </TableRow>
           </TableHeader>
           <TableBody>
-            {payments.map((payment) => {
-                const member = memberMap.get(payment.memberId);
-                if (!member) return null;
-
-                return (
+            {payments.map((payment) => (
               <TableRow key={payment.id}>
-                <TableCell className="font-medium">{member.name}</TableCell>
+                <TableCell className="font-medium">{payment.memberName}</TableCell>
                 <TableCell>৳{payment.amount.toFixed(2)}</TableCell>
+                <TableCell>৳{payment.totalPaid.toFixed(2)}</TableCell>
                 <TableCell>{payment.paymentMethod}</TableCell>
                 <TableCell>
                   <Badge
@@ -155,7 +153,7 @@ export default function PaymentsTable({ payments, members, onDataChange }: { pay
                   </DropdownMenu>
                 </TableCell>
               </TableRow>
-            )})}
+            ))}
           </TableBody>
         </Table>
       </CardContent>
