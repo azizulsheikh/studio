@@ -42,12 +42,15 @@ import { Badge } from '../ui/badge';
 import { cn } from '@/lib/utils';
 import { MemberPaymentSummary } from './payments-client-page';
 import PaymentHistoryTable from '../member/payment-history-table';
+import { deleteMember } from '@/lib/actions';
 
 export default function PaymentsTable({ summaries, members, allPayments, onDataChange }: { summaries: MemberPaymentSummary[]; members: Member[], allPayments: Payment[], onDataChange: () => void }) {
   const { toast } = useToast();
   const [dialogOpen, setDialogOpen] = React.useState(false);
   const [historyDialogOpen, setHistoryDialogOpen] = React.useState(false);
+  const [alertDialogOpen, setAlertDialogOpen] = React.useState(false);
   const [selectedPayment, setSelectedPayment] = React.useState<Payment | null>(null);
+  const [selectedMember, setSelectedMember] = React.useState<MemberPaymentSummary | null>(null);
   const [selectedMemberPayments, setSelectedMemberPayments] = React.useState<Payment[]>([]);
   const [selectedMemberName, setSelectedMemberName] = React.useState<string>('');
 
@@ -72,6 +75,20 @@ export default function PaymentsTable({ summaries, members, allPayments, onDataC
   const openCreateDialog = () => {
     setSelectedPayment(null);
     setDialogOpen(true);
+  };
+
+  const openDeleteDialog = (summary: MemberPaymentSummary) => {
+    setSelectedMember(summary);
+    setAlertDialogOpen(true);
+  };
+
+  const handleDeleteMember = async (id: string) => {
+    const result = await deleteMember(id);
+    toast({
+      title: result.message,
+    });
+    setAlertDialogOpen(false);
+    onDataChange();
   };
 
   return (
@@ -139,6 +156,7 @@ export default function PaymentsTable({ summaries, members, allPayments, onDataC
                       <DropdownMenuLabel>Actions</DropdownMenuLabel>
                       <DropdownMenuItem onSelect={() => openHistoryDialog(summary.memberId, summary.memberName)}>View Details</DropdownMenuItem>
                       <DropdownMenuItem onSelect={() => openEditDialog(summary.latestPayment)}>Edit Last Payment</DropdownMenuItem>
+                      <DropdownMenuItem onSelect={() => openDeleteDialog(summary)} className="text-destructive">Delete Member</DropdownMenuItem>
                     </DropdownMenuContent>
                   </DropdownMenu>
                 </TableCell>
@@ -168,6 +186,20 @@ export default function PaymentsTable({ summaries, members, allPayments, onDataC
           </div>
         </DialogContent>
       </Dialog>
+      <AlertDialog open={alertDialogOpen} onOpenChange={setAlertDialogOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+            <AlertDialogDescription>
+              This action cannot be undone. This will permanently delete the member profile for {selectedMember?.memberName} and all their payments.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction onClick={() => selectedMember && handleDeleteMember(selectedMember.memberId)}>Continue</AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </Card>
   );
 }
