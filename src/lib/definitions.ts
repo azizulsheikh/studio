@@ -23,7 +23,7 @@ export type Payment = {
   memberId: string;
   amount: number;
   timestamp: string;
-  paymentMethod: 'Credit Card' | 'PayPal' | 'Bank Transfer';
+  paymentMethod: 'Cash' | 'bKash' | 'Bank Transfer';
   status: 'Completed' | 'Pending' | 'Failed';
 };
 
@@ -32,7 +32,7 @@ export const PaymentSchema = z.object({
   memberId: z.string().min(1, { message: 'Please select a member.' }),
   amount: z.coerce.number().positive({ message: 'Amount must be positive.' }),
   timestamp: z.string(),
-  paymentMethod: z.enum(['Credit Card', 'PayPal', 'Bank Transfer']),
+  paymentMethod: z.enum(['Cash', 'bKash', 'Bank Transfer']),
   status: z.enum(['Completed', 'Pending', 'Failed']),
 });
 

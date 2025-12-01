@@ -40,7 +40,7 @@ export function PaymentForm({ payment, members, onFinished }: PaymentFormProps) 
     defaultValues: {
       memberId: payment?.memberId || '',
       amount: payment?.amount || 0,
-      paymentMethod: payment?.paymentMethod || 'Credit Card',
+      paymentMethod: payment?.paymentMethod || 'Cash',
       status: payment?.status || 'Pending',
     },
   });
@@ -128,8 +128,8 @@ export function PaymentForm({ payment, members, onFinished }: PaymentFormProps) 
                   </SelectTrigger>
                 </FormControl>
                 <SelectContent>
-                  <SelectItem value="Credit Card">Credit Card</SelectItem>
-                  <SelectItem value="PayPal">PayPal</SelectItem>
+                  <SelectItem value="Cash">Cash</SelectItem>
+                  <SelectItem value="bKash">bKash</SelectItem>
                   <SelectItem value="Bank Transfer">Bank Transfer</SelectItem>
                 </SelectContent>
               </Select>
