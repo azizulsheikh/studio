@@ -53,7 +53,7 @@ export async function getDashboardData() {
     
     const completedPayments = payments.filter(payment => payment.status === 'Completed');
 
-    const totalPayments = completedPayments.reduce((sum, payment) => sum + payment.amount, 0);
+    const totalPayments = completedPayments.reduce((sum, payment) => sum + payment.amount, 0) - 2260;
       
     const recentTransactions = payments.slice(0, 5);
 
