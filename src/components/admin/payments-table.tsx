@@ -8,7 +8,6 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-  TableFooter,
 } from '@/components/ui/table';
 import {
   Card,
@@ -79,11 +78,6 @@ export default function PaymentsTable({ payments, members, onDataChange }: { pay
     setSelectedPayment(null);
     setDialogOpen(true);
   };
-
-  const totalAmount = payments.reduce((sum, payment) => sum + payment.amount, 0);
-  const totalCompletedAmount = payments
-    .filter(p => p.status === 'Completed')
-    .reduce((sum, payment) => sum + payment.amount, 0);
 
   return (
     <Card>
@@ -163,18 +157,6 @@ export default function PaymentsTable({ payments, members, onDataChange }: { pay
               </TableRow>
             )})}
           </TableBody>
-          <TableFooter>
-            <TableRow>
-              <TableCell colSpan={1} className="font-bold">Total (All)</TableCell>
-              <TableCell className="font-bold">৳{totalAmount.toFixed(2)}</TableCell>
-              <TableCell colSpan={4}></TableCell>
-            </TableRow>
-            <TableRow>
-              <TableCell colSpan={1} className="font-bold text-primary">Total (Completed)</TableCell>
-              <TableCell className="font-bold text-primary">৳{totalCompletedAmount.toFixed(2)}</TableCell>
-              <TableCell colSpan={4}></TableCell>
-            </TableRow>
-          </TableFooter>
         </Table>
       </CardContent>
       <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
